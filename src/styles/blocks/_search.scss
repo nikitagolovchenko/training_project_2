@@ -1,0 +1,47 @@
+.search {
+    position: relative;
+    z-index: 1;
+    left: 241px;
+
+    @media (max-width: $screen-sm) {
+        padding-bottom: 10px;
+    }
+
+    &__form {
+        margin-right: 30px;
+        margin-left: 10px;
+        display: flex;
+        align-items: center;
+
+        @media (max-width: $screen-md) {
+            margin-right: 10px;
+        }
+    }
+
+    &__field {
+        border: 0;
+        outline: none;
+        padding: 2px;
+        margin: 0 15px;
+        background-color: $white-body;
+        border-bottom: 1px solid transparent;
+        
+        &:focus {
+            border-bottom: 1px solid $orange;
+        }
+
+    }
+
+    &__icon {
+        color: $gray;
+        padding: 0;
+        border: 0;
+        outline: none;
+        cursor: pointer;
+        @extend %transition;
+
+        &:hover {
+            color: $orange;
+        }
+    }
+}

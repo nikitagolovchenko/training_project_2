@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+	
+<head>
+	<meta charset="UTF-8">
+	<title>Portfolio</title>
+	<link rel="stylesheet" href="../../dist/css/main.css">
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js"></script>
+	<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+	<script src="../../dist/js/index.js"></script>
+</head>
+
+<body>
+	<div id="wrapper" class="wrapper">
+		
+		<header class="header">
+			
+			<div class="header-top">
+				<div class="container">
+					<div class="header-top__inner">
+						<p class="header-top__text-line">Daily Update: <span>Branding notes photo in portfolio</span></p>
+						<div class="header-top__nav">
+							
+							<div class="search" id="search">
+								<form action="#" class="search__form">
+									<button type="submit" id="searchSubmit" class="icon-search search__icon"></button>
+									<input class="search__field" id="searchField" type="search" name="text" placeholder="Поиск по сайту" maxlength="19"required>
+									<button type="reset" class="icon-cancel search__icon"></button>
+								</form>
+							</div>
+							<!-- search -->
+							<div class="socials socials--relative">
+								<ul class="socials__inner">
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-facebook"></span></a>
+									</li>
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-twitter"></span></a>
+									</li>
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-instagram"></span></a>
+									</li>
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-pinterest"></span></a>
+									</li>
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-dribbble"></span></a>
+									</li>
+									<li class="socials__item">
+										<a class="socials__link" href="#" target="_blank"><span class="icon-tumblr"></span></a>
+									</li>
+								</ul>
+							</div>
+							<!-- /.socials -->
+						</div>
+					</div>
+				</div>
+				<!-- /.container -->
+			</div>
+			<!-- /.header-top -->
+
+			<div class="header-bottom">
+				<div class="container">
+					<div class="header-bottom__inner">
+						<div class="header-bottom__logo">
+							<img src="../resources/images/header/logo.png" alt="logo">
+						</div>
+						<nav class="nav  header-bottom__nav" id="nav">
+							<ul class="nav__inner  header-bottom__nav-inner" id="navInner">
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">Home</a>
+								</li>
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">Portfolio</a>
+								</li>
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">About</a>
+								</li>
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">Services</a>
+								</li>
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">Blog</a>
+								</li>
+								<li class="nav__item  header-bottom__nav-item">
+									<a class="nav__link  header-bottom__nav-link" href="#">Contact us</a>
+								</li>
+							</ul>
+						</nav>
+						<!-- /.header-bottom__nav -->
+						<div class="burger" id="burger">
+							<span class="burger__elements">
+							</span>
+						</div>
+					</div>
+				</div>
+				<!-- /.container -->
+			</div>
+			<!-- /.header-bottom -->
+		</header>
+		
+		<div class="contacts">
+			<div class="container">
+				<div class="contacts__wrap">
+					<div class="contacts__photo">
+						<img src="../resources/images/contacts/photo.jpg" alt="photo">
+					</div>
+					<div class="contacts__content">
+						<dl class="contacts__data"">
+							<div class="contacts__inner">
+								<dt class="contacts__title">Name:</dt>
+								<dd class="contacts__text">Albert Alex</dd>
+							</div>
+							<div class="contacts__inner">
+								<dt class="contacts__title">Phone:</dt>
+								<dd class="contacts__text">+80 356 22 5688</dd>
+							</div>
+							<div class="contacts__inner">
+								<dt class="contacts__title">Email Address:</dt>
+								<dd class="contacts__text">info@domain.com</dd>
+							</div>
+							<div class="contacts__inner">
+								<dt class="contacts__title">Studio Address:</dt>
+								<dd class="contacts__text">Studio 36 Jump road Street, New York ACT 1995</dd>
+							</div>						
+						</dl>
+						<button class="button contacts__button" type="submit">Contact me</button>
+					</div>
+				</div>
+			</div>
+			<!-- /.container -->
+		</div>
+		<!-- /.contacts -->
+
+		<div class="works">
+			<div class="container">
+				<nav class="nav nav--without-bg works__filter">
+					<ul class="nav__inner  works__filter-inner">
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">Home</a>
+						</li>
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">Portfolio</a>
+						</li>
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">About</a>
+						</li>
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">Services</a>
+						</li>
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">Blog</a>
+						</li>
+						<li class="nav__item  works__filter-item">
+							<a class="nav__link  works__filter-link" href="#">Contact us</a>
+						</li>
+					</ul>
+				</nav>
+				<!-- /.works__filter -->
+
+				<div class="grid works__grid">
+					<div class="grid__sizer"></div>
+		
+				</div>
+
+				
+				<button class="button works__button" id="worksBtn" type="button">Load more</button>
+			</div>
+			<!-- /.container -->
+		</div>
+		<!-- /.works -->
+		
+		<footer class="footer">
+			<div class="container">
+				<div class="footer__inner">
+					<div class="socials socials--without-border">
+						<ul class="socials__inner">
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-facebook"></span></a>
+							</li>
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-twitter"></span></a>
+							</li>
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-instagram"></span></a>
+							</li>
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-pinterest"></span></a>
+							</li>
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-dribbble"></span></a>
+							</li>
+							<li class="socials__item">
+								<a class="socials__link" href="#" target="_blank"><span class="icon-tumblr"></span></a>
+							</li>
+						</ul>
+					</div>
+					<!-- /.socials -->
+					<p class="footer__text">Portfolio with Icon by <span>Digitudes</span></p>
+					<p class="footer__text">&copy; Copyright <span>2019</span> &commat; Republic. All Rights Reserved</p>
+				</div>
+			</div>
+			<!-- /.container -->
+		</footer>
+	</div>
+	
+</body>
+</html>

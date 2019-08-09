@@ -1,0 +1,35 @@
+.nav {
+    &__inner {
+        display: flex;
+    }
+    
+    &__item {
+        padding: 0 25px;
+        display: block;
+    }
+    
+    &__link {
+        padding: 10px 0;
+        color: $white;
+        text-transform: uppercase;
+        border-bottom: 2px solid transparent;
+        @extend %transition;
+
+        &:hover {
+            border-bottom: 2px solid $white;
+        }
+    }
+
+    &--without-bg {
+        
+        .nav__link {
+            color: $gray;
+            
+            &:hover {
+                color: $gray-dark;
+                border-bottom-color: $orange;
+            }
+        }
+    }
+
+}

@@ -1,0 +1,17 @@
+.grid__sizer,
+.grid__item {
+    width: 31.333%;
+    margin: 1%;
+
+    @media (max-width: $screen-md) {
+            width: 48%;
+    }
+
+    @media (max-width: $screen-sm) {
+            width: 98%;
+    }
+}
+
+.grid__item--width2 { 
+    width: 48%; 
+}

@@ -1,0 +1,32 @@
+.footer {
+    padding: 40px 0 90px;
+
+    @media (max-width: $screen-lg) {
+        padding-bottom: 65px;
+    }
+
+    @media (max-width: $screen-md) {
+        padding: 20px 0 50px;
+    }
+
+    @media (max-width: $screen-sm) {
+        padding: 20px 0;
+    }
+
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &__text {
+        @media (max-width: $screen-sm) {
+            text-align: center;
+        }
+
+        span {
+            color: $orange;
+        }
+    }
+}

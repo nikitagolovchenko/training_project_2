@@ -1,0 +1,37 @@
+.works {
+    padding: 90px 0 40px;
+
+    
+    @media (max-width: $screen-lg) {
+        padding-top: 80px;
+    }
+    
+    @media (max-width: $screen-md) {
+        padding-top: 40px;
+    }
+
+    @media (max-width: $screen-md) {
+        padding: 25px 0;
+    }
+
+    &__filter {
+        display: flex;
+        justify-content: center;
+
+        &-inner {
+            @media (max-width: $screen-md) {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    }
+
+    &__grid {
+        margin-bottom: 20px;
+    }
+
+    &__button {
+        display: block;
+        margin: 0 auto;
+    }
+}
