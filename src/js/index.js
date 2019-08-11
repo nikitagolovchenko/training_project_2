@@ -1,6 +1,13 @@
 'use strict';
 
-// import $ from 'jquery';
+import $ from 'jquery';
+import Masonry from 'masonry-layout';
+import jQueryBridget from 'jquery-bridget';
+import imagesLoaded from 'imagesloaded';
+
+jQueryBridget('masonry', Masonry, $);
+imagesLoaded.makeJQueryPlugin( $ );
+
 
 
 $(document).ready(function () {
@@ -119,11 +126,13 @@ $(document).ready(function () {
     
     // ajax request
     let picturesAmount = 0;
+    let elemArr = [];
 
     $.get($requestUrl, function (data, status, xhr) {
 
         for(let i = 0; i < 10; i++) {
             picturesAmount++;
+            elemArr.push(data[i]);
             
             let gridItem = $(`<div class="grid__item" data-type=${data[i].type}></div>`).append(`<img src=${data[i].url} alt="" />`);
             $('.grid').append(gridItem).masonry('appended', gridItem);
@@ -134,14 +143,16 @@ $(document).ready(function () {
     });
 
 
-
     $worksBtn.on('click', function () {
-        $.get($requestUrl, function (data, status, xhr) {
+        let httpRec = $.get($requestUrl, function (data, status, xhr) {
+
 
             for(let k = 0; k < 3; k++) {
                 if(picturesAmount < data.length) {
                     picturesAmount++;
                     
+                    elemArr.push(data[picturesAmount - 1]);
+
                     let gridItem = $(`<div class="grid__item" data-type=${data[picturesAmount - 1].type}></div>`).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
                     $('.grid').append(gridItem).masonry('appended', gridItem);
                     $grid.imagesLoaded().progress(function () {
@@ -153,6 +164,45 @@ $(document).ready(function () {
                 }
             }
         });
-    })
 
+        httpRec.then(function(x) {
+            console.log(elemArr);
+        })
+    });
+
+
+    // =========================================
+
+    
+    let removed = [];
+    var isActive = true;
+    var masonryOptions = {
+        itemSelector: '.grid__item',
+        columnWidth: '.grid__sizer',
+        percentPosition: true,
+    }
+
+    $('[data-sort]').on('click', function() {
+        let sort = $(this).data('sort');
+
+        if(sort === 'all') {
+            $(removed).each((i, val) => {
+                $(val).show();
+            });
+            // $grid.masonry( 'appended', removed[0] )
+            //     // layout remaining item elements
+            //     .masonry('layout');
+        } else {
+            $(elemArr).each((i, val) => {
+                if(val.type === sort) {
+                    let x = $(`[data-type=${sort}]`).hide();
+                    removed.push(x);
+                    // $grid.masonry( 'remove', x )
+                    // // layout remaining item elements
+                    // .masonry('layout');
+                }
+            });
+        }
+    });
+   
 });

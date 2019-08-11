@@ -24,7 +24,10 @@
   },
   "dependencies": {
     "core-js": "^3.1.4",
+    "imagesloaded": "^4.1.4",
     "jquery": "^3.4.1",
+    "jquery-bridget": "^2.0.1",
+    "masonry-layout": "^4.2.2",
     "regenerator-runtime": "^0.13.3"
   }
 }
