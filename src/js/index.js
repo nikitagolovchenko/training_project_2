@@ -128,13 +128,17 @@ $(document).ready(function () {
     let picturesAmount = 0;
     let elemArr = [];
 
-    $.get($requestUrl, function (data, status, xhr) {
+    let xhrLoad = $.get($requestUrl, function (data) {
 
         for(let i = 0; i < 10; i++) {
             picturesAmount++;
-            elemArr.push(data[i]);
+
+            let link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+            $(link).append(`<img src=${data[i].url} alt="" />`);
+
+            let gridItem = $(`<div class="grid__item works__item" data-type=${data[i].type}></div>`).append(link);
+            elemArr.push(gridItem);
             
-            let gridItem = $(`<div class="grid__item" data-type=${data[i].type}></div>`).append(`<img src=${data[i].url} alt="" />`);
             $('.grid').append(gridItem).masonry('appended', gridItem);
             $grid.imagesLoaded().progress(function () {
                 $grid.masonry('layout');
@@ -142,18 +146,25 @@ $(document).ready(function () {
         }
     });
 
+    xhrLoad.then(function() {
+        $('.works__link').off('click', openImg).on('click', openImg);
+    });
+
+
 
     $worksBtn.on('click', function () {
-        let httpRec = $.get($requestUrl, function (data, status, xhr) {
-
+        let httpRec = $.get($requestUrl, function (data) {
 
             for(let k = 0; k < 3; k++) {
                 if(picturesAmount < data.length) {
                     picturesAmount++;
                     
-                    elemArr.push(data[picturesAmount - 1]);
+                    let link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+                    $(link).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
 
-                    let gridItem = $(`<div class="grid__item" data-type=${data[picturesAmount - 1].type}></div>`).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
+                    let gridItem = $(`<div class="grid__item works__item" data-type=${data[picturesAmount - 1].type}></div>`).append(link);
+                    elemArr.push(gridItem);
+
                     $('.grid').append(gridItem).masonry('appended', gridItem);
                     $grid.imagesLoaded().progress(function () {
                         $grid.masonry('layout');
@@ -165,22 +176,16 @@ $(document).ready(function () {
             }
         });
 
-        httpRec.then(function(x) {
-            console.log(elemArr);
+        httpRec.then(function() {
+            $('.works__link').off('click', openImg).on('click', openImg);
         })
     });
 
 
     // =========================================
 
-    
+    // ФИЛЬТРЫ КАРТИНОК
     let removed = [];
-    var isActive = true;
-    var masonryOptions = {
-        itemSelector: '.grid__item',
-        columnWidth: '.grid__sizer',
-        percentPosition: true,
-    }
 
     $('[data-sort]').on('click', function() {
         let sort = $(this).data('sort');
@@ -190,21 +195,43 @@ $(document).ready(function () {
                 $(val).show();
                 $grid.masonry( 'layout');
             });
-            // $grid.masonry( 'appended', removed[0] )
-            //     // layout remaining item elements
-            //     .masonry('layout');
+            removed.splice(0);
+
         } else {
+            $(removed).each((i, val) => {
+                $(val).show();
+            });
+            removed.splice(0);
+
             $(elemArr).each((i, val) => {
-                if(val.type === sort) {
-                    let x = $(`[data-type=${sort}]`).hide();
-                    removed.push(x);
+
+                if(val.data('type') !== sort) {
+
+                    let hidden = $(val).hide();
+                    removed.push(hidden);
                     
                     $grid.masonry( 'layout');
-                    // layout remaining item elements
-                    // $grid.masonry('layout');
-                }
+                } 
             });
         }
     });
-   
+
+
+    //ОКРЫТИЕ КАРТИНОК
+    function openImg(event) {
+        event.preventDefault;
+        let attr = $(event.target).children().attr('src');
+        console.log($(event.target).children().attr('src'));
+        sessionStorage.setItem('link', attr);    
+
+        window.open('picture.html', '_blank');
+    };
+
+    
+
+    // СТРАНИЦА PICTURE
+    let link = sessionStorage.getItem('link');
+    $('#picture').attr('src', link);
+    $('#pictureWrap').css('backgroundImage', `url(${link})`);
+       
 });
