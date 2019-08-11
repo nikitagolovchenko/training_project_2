@@ -13756,6 +13756,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     if (sort === 'all') {
       jquery__WEBPACK_IMPORTED_MODULE_0___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()(val).show();
+        $grid.masonry('layout');
       }); // $grid.masonry( 'appended', removed[0] )
       //     // layout remaining item elements
       //     .masonry('layout');
@@ -13763,9 +13764,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       jquery__WEBPACK_IMPORTED_MODULE_0___default()(elemArr).each(function (i, val) {
         if (val.type === sort) {
           var x = jquery__WEBPACK_IMPORTED_MODULE_0___default()("[data-type=".concat(sort, "]")).hide();
-          removed.push(x); // $grid.masonry( 'remove', x )
-          // // layout remaining item elements
-          // .masonry('layout');
+          removed.push(x);
+          $grid.masonry('layout'); // layout remaining item elements
+          // $grid.masonry('layout');
         }
       });
     }

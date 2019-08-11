@@ -188,6 +188,7 @@ $(document).ready(function () {
         if(sort === 'all') {
             $(removed).each((i, val) => {
                 $(val).show();
+                $grid.masonry( 'layout');
             });
             // $grid.masonry( 'appended', removed[0] )
             //     // layout remaining item elements
@@ -197,9 +198,10 @@ $(document).ready(function () {
                 if(val.type === sort) {
                     let x = $(`[data-type=${sort}]`).hide();
                     removed.push(x);
-                    // $grid.masonry( 'remove', x )
-                    // // layout remaining item elements
-                    // .masonry('layout');
+                    
+                    $grid.masonry( 'layout');
+                    // layout remaining item elements
+                    // $grid.masonry('layout');
                 }
             });
         }
