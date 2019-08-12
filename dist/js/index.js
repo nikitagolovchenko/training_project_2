@@ -86,6 +86,22 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./node_modules/core-js/internals/a-function.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/internals/a-function.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function (it) {
+  if (typeof it != 'function') {
+    throw TypeError(String(it) + ' is not a function');
+  } return it;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/an-object.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/an-object.js ***!
@@ -423,6 +439,45 @@ module.exports = function (exec) {
   } catch (error) {
     return true;
   }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/function-bind.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/internals/function-bind.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var aFunction = __webpack_require__(/*! ../internals/a-function */ "./node_modules/core-js/internals/a-function.js");
+var isObject = __webpack_require__(/*! ../internals/is-object */ "./node_modules/core-js/internals/is-object.js");
+
+var slice = [].slice;
+var factories = {};
+
+var construct = function (C, argsLength, args) {
+  if (!(argsLength in factories)) {
+    for (var list = [], i = 0; i < argsLength; i++) list[i] = 'a[' + i + ']';
+    // eslint-disable-next-line no-new-func
+    factories[argsLength] = Function('C,a', 'return new C(' + list.join(',') + ')');
+  } return factories[argsLength](C, args);
+};
+
+// `Function.prototype.bind` method implementation
+// https://tc39.github.io/ecma262/#sec-function.prototype.bind
+module.exports = Function.bind || function bind(that /* , ...args */) {
+  var fn = aFunction(this);
+  var partArgs = slice.call(arguments, 1);
+  var boundFunction = function bound(/* args... */) {
+    var args = partArgs.concat(slice.call(arguments));
+    return this instanceof boundFunction ? construct(fn, args.length, args) : fn.apply(that, args);
+  };
+  if (isObject(fn.prototype)) boundFunction.prototype = fn.prototype;
+  return boundFunction;
 };
 
 
@@ -1317,6 +1372,45 @@ $({ target: 'Array', proto: true, forced: !arrayMethodHasSpeciesSupport('splice'
     O.length = len - actualDeleteCount + insertCount;
     return A;
   }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.function.bind.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.function.bind.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var bind = __webpack_require__(/*! ../internals/function-bind */ "./node_modules/core-js/internals/function-bind.js");
+
+// `Function.prototype.bind` method
+// https://tc39.github.io/ecma262/#sec-function.prototype.bind
+$({ target: 'Function', proto: true }, {
+  bind: bind
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.object.define-property.js":
+/*!*******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es.object.define-property.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
+var objectDefinePropertyModile = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
+
+// `Object.defineProperty` method
+// https://tc39.github.io/ecma262/#sec-object.defineproperty
+$({ target: 'Object', stat: true, forced: !DESCRIPTORS, sham: !DESCRIPTORS }, {
+  defineProperty: objectDefinePropertyModile.f
 });
 
 
@@ -14847,14 +14941,121 @@ module.exports = g;
 
 /***/ }),
 
-/***/ "./src/js/components/scrollTop.js":
+/***/ "./src/js/components/navSearch.js":
 /*!****************************************!*\
-  !*** ./src/js/components/scrollTop.js ***!
+  !*** ./src/js/components/navSearch.js ***!
   \****************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\src\\js\\components\\scrollTop.js: Unexpected token, expected \";\" (5:13)\n\n  3 | export default class ScrollTop {\n  4 |     constructor(myElement) {\n> 5 |         this myElement = myElement;\n    |              ^\n  6 | \n  7 |     }\n  8 | \n    at Parser.raise (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:6325:17)\n    at Parser.unexpected (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:7642:16)\n    at Parser.semicolon (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:7624:40)\n    at Parser.parseExpressionStatement (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10364:10)\n    at Parser.parseStatementContent (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9963:19)\n    at Parser.parseStatement (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9829:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10405:25)\n    at Parser.parseBlockBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10392:10)\n    at Parser.parseBlock (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10376:10)\n    at Parser.parseFunctionBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9424:24)");
+// import $ from 'jquery';
+// export default class ShowHideSearch {
+//     constructor(search, searchField, searchSubmit) {
+//         this.search = search;
+//         this.searchField = searchField;
+//         this.searchSubmit = searchSubmit;
+//         this.showSearch = this.showSearch.bind(this);
+//         this.closeSearch = this.closeSearch.bind(this);
+//         $(window).on('load resize orientationchange', function() {
+//             if (this.innerWidth > 768) {
+//                 $(searchSubmit).on('mouseover', this.showSearch);
+//                 $(document).on('click', this.closeSearch);
+//             } else {
+//                 $(searchSubmit).off('mouseover', this.showSearch);
+//                 $(document).off('click',  this.closeSearch);
+//                 $(this.search).css('left', '0');
+//             }
+//         });
+//     }
+//     showSearch(e) {
+//         console.log(this);
+//         if(!$(this.search).hasClass('active')) {
+//             e.preventDefault;
+//             $(this.searchField).focus();
+//             $(this.search).addClass('active').animate({
+//                 left: '0',
+//             }, 400);
+//         }
+//     }
+//     closeSearch(e) {
+//         if ($(this.search).hasClass('active')) {
+//             if (!$(e.target).closest($(this.search)).length) {
+//                 $(this.search).animate({
+//                     left: '241px'
+//                 }, 400);
+//                 $(this.search).removeClass('active');
+//             }
+//         }
+//     }
+// }
+
+/***/ }),
+
+/***/ "./src/js/components/scrollTop.js":
+/*!****************************************!*\
+  !*** ./src/js/components/scrollTop.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ScrollTop; });
+/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.function.bind */ "./node_modules/core-js/modules/es.function.bind.js");
+/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.define-property */ "./node_modules/core-js/modules/es.object.define-property.js");
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var ScrollTop =
+/*#__PURE__*/
+function () {
+  function ScrollTop(element) {
+    _classCallCheck(this, ScrollTop);
+
+    this.element = element;
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', this.showHideElement.bind(this));
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).on('click', this.scrollTopAnimate);
+  }
+
+  _createClass(ScrollTop, [{
+    key: "showHideElement",
+    value: function showHideElement() {
+      // высота окна браузера
+      var windowHeight = jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).height(); // значение скролла
+
+      var scrollTop = jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).scrollTop();
+
+      if (scrollTop >= windowHeight) {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).show(500);
+      } else {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).hide(500);
+      }
+    }
+  }, {
+    key: "scrollTopAnimate",
+    value: function scrollTopAnimate() {
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('html').animate({
+        scrollTop: '0'
+      }, 500);
+    }
+  }]);
+
+  return ScrollTop;
+}();
+
+
 
 /***/ }),
 
@@ -14878,7 +15079,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
-/* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(components_scrollTop__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
@@ -14887,20 +15087,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_2___default.a, jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
-imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // ======= ????
+imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // импорт компонента:
 
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
-  // --- VARIABLES ---
+  // вызов компонента:
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop'); // --- variables ---
+
   var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
   var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchSubmit');
   var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchField');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
   var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#navInner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // ===== ??????
-
-  var scrollTop = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5___default.a('#scrollTop'); // --- FUNCTIONS ---
-  // show search
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // show search function
 
   function showSearch(e) {
     if (!$search.hasClass('active')) {
@@ -14912,7 +15111,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     }
   }
 
-  ; // hide search
+  ; // hide search function
 
   function closeSearch(e) {
     if ($search.hasClass('active')) {
@@ -14961,7 +15160,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     });
   }
 
-  ; // --- TRIGGER EVENTS ---
+  ; // --- trigger events ---
 
   jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize orientationchange', function () {
     // resizing errors correction
@@ -14984,20 +15183,21 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
       $search.css('left', '0');
     }
   });
-  $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // ===============================
+  $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // =====================================================
 
   var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
   var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#worksBtn'); // masonry
 
   var $grid = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').masonry({
-    // options
     itemSelector: '.grid__item',
     columnWidth: '.grid__sizer',
     percentPosition: true
-  }); // ajax request
+  }); // кол-во открыых картинок
 
-  var picturesAmount = 0;
-  var elemArr = [];
+  var picturesAmount = 0; // массив картинок
+
+  var elemArr = []; // --- ajax request при загрузке страницы ---
+
   var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
     for (var i = 0; i < 10; i++) {
       picturesAmount++;
@@ -15012,10 +15212,12 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
         $grid.masonry('layout');
       });
     }
-  });
+  }); // открытваем картинку в новой вкладке
+
   xhrLoad.then(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
-  });
+  }); // --- ajax request при клике на кнопку---
+
   $worksBtn.on('click', function () {
     var httpRec = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
       for (var k = 0; k < 3; k++) {
@@ -15035,24 +15237,28 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
           return;
         }
       }
-    });
+    }); // открытваем картинку в новой вкладке
+
     httpRec.then(function () {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
     });
   }); // =========================================
-  // ФИЛЬТРЫ КАРТИНОК
+  // --- ФИЛЬТР КАРТИНОК ---
 
   var removed = [];
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('[data-sort]').on('click', function () {
+    // значение атрибута data:
     var sort = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('sort');
 
     if (sort === 'all') {
+      // показываем все скрытые картинки и очищаем массив
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
         $grid.masonry('layout');
       });
       removed.splice(0);
     } else {
+      // показываем все скрытые картинки и очищаем массив
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
       });
@@ -15065,7 +15271,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
         }
       });
     }
-  }); //ОКРЫТИЕ КАРТИНОК
+  }); // --- открытие картинок в новой вкладке ---
 
   function openImg(event) {
     event.preventDefault;
@@ -15075,7 +15281,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     window.open('picture.html', '_blank');
   }
 
-  ; // СТРАНИЦА PICTURE
+  ; // --- страница с картинкой ---
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);
@@ -15104,13 +15310,14 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 /***/ }),
 
 /***/ 0:
-/*!****************************************************************!*\
-  !*** multi ./src/js/index.js ./src/js/components/scrollTop.js ***!
-  \****************************************************************/
+/*!*************************************************************************************************!*\
+  !*** multi ./src/js/index.js ./src/js/components/navSearch.js ./src/js/components/scrollTop.js ***!
+  \*************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\index.js */"./src/js/index.js");
+__webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\navSearch.js */"./src/js/components/navSearch.js");
 module.exports = __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\scrollTop.js */"./src/js/components/scrollTop.js");
 
 

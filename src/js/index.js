@@ -8,26 +8,25 @@ import imagesLoaded from 'imagesloaded';
 jQueryBridget('masonry', Masonry, $);
 imagesLoaded.makeJQueryPlugin( $ );
 
-// ======= ????
+// импорт компонента:
 import ScrollTop from 'components/scrollTop';
 
 
 $(document).ready(function () {
+    // вызов компонента:
+    const scrollElement = new ScrollTop('#scrollTop');
 
-    // --- VARIABLES ---
+
+    // --- variables ---
     const $search = $('#search');
     const $searchSubmit = $('#searchSubmit');
     const $searchField = $('#searchField');
     const $nav = $('#nav');
     const $navInner = $('#navInner');
     const $burger = $('#burger');
+ 
 
-
-    // ===== ??????
-    const scrollTop = new ScrollTop('#scrollTop');
-    // --- FUNCTIONS ---
-
-    // show search
+    // show search function
     function showSearch(e) {
         if (!$search.hasClass('active')) {
             e.preventDefault;
@@ -38,7 +37,7 @@ $(document).ready(function () {
         }
     };
 
-    // hide search
+    // hide search function
     function closeSearch(e) {
         if ($search.hasClass('active')) {
             if (!$(e.target).closest($search).length) {
@@ -75,6 +74,7 @@ $(document).ready(function () {
         // hide burger/nav when you click anywhere 
         $(document).on('click', function (e) {
             if ($burger.hasClass('active')) {
+
                 if ((!$(e.target).closest($burger).length) && (e.target !== $navInner[0])) {
                     console.log($(this));
                     $burger.removeClass('active');
@@ -84,7 +84,7 @@ $(document).ready(function () {
         })
     };
 
-    // --- TRIGGER EVENTS ---
+    // --- trigger events ---
 
     $(window).on('load resize orientationchange', function () {
         // resizing errors correction
@@ -102,6 +102,7 @@ $(document).ready(function () {
         if (this.innerWidth > 768) {
             $searchSubmit.on('mouseover', showSearch);
             $(document).on('click', closeSearch);
+
         } else {
             $searchSubmit.off('mouseover', showSearch);
             $(document).off('click', closeSearch);
@@ -113,7 +114,7 @@ $(document).ready(function () {
 
 
 
-    // ===============================
+    // =====================================================
 
 
     const $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
@@ -121,17 +122,19 @@ $(document).ready(function () {
 
     // masonry
     let $grid = $('.grid').masonry({
-        // options
+
         itemSelector: '.grid__item',
         columnWidth: '.grid__sizer',
         percentPosition: true,
         
     });
     
-    // ajax request
+    // кол-во открыых картинок
     let picturesAmount = 0;
+    // массив картинок
     let elemArr = [];
-
+    
+    // --- ajax request при загрузке страницы ---
     let xhrLoad = $.get($requestUrl, function (data) {
 
         for(let i = 0; i < 10; i++) {
@@ -141,21 +144,24 @@ $(document).ready(function () {
             $(link).append(`<img src=${data[i].url} alt="" />`);
 
             let gridItem = $(`<div class="grid__item works__item" data-type=${data[i].type}></div>`).append(link);
+
             elemArr.push(gridItem);
             
             $('.grid').append(gridItem).masonry('appended', gridItem);
+
             $grid.imagesLoaded().progress(function () {
                 $grid.masonry('layout');
             });
         }
     });
 
+    // открытваем картинку в новой вкладке
     xhrLoad.then(function() {
         $('.works__link').off('click', openImg).on('click', openImg);
     });
 
 
-
+    // --- ajax request при клике на кнопку---
     $worksBtn.on('click', function () {
         let httpRec = $.get($requestUrl, function (data) {
 
@@ -167,9 +173,11 @@ $(document).ready(function () {
                     $(link).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
 
                     let gridItem = $(`<div class="grid__item works__item" data-type=${data[picturesAmount - 1].type}></div>`).append(link);
+
                     elemArr.push(gridItem);
 
                     $('.grid').append(gridItem).masonry('appended', gridItem);
+
                     $grid.imagesLoaded().progress(function () {
                         $grid.masonry('layout');
                     });
@@ -180,21 +188,23 @@ $(document).ready(function () {
             }
         });
 
+        // открытваем картинку в новой вкладке
         httpRec.then(function() {
             $('.works__link').off('click', openImg).on('click', openImg);
         })
     });
 
-
     // =========================================
 
-    // ФИЛЬТРЫ КАРТИНОК
+    // --- ФИЛЬТР КАРТИНОК ---
     let removed = [];
 
     $('[data-sort]').on('click', function() {
+        // значение атрибута data:
         let sort = $(this).data('sort');
 
         if(sort === 'all') {
+            // показываем все скрытые картинки и очищаем массив
             $(removed).each((i, val) => {
                 $(val).show();
                 $grid.masonry( 'layout');
@@ -202,16 +212,18 @@ $(document).ready(function () {
             removed.splice(0);
 
         } else {
+            // показываем все скрытые картинки и очищаем массив
             $(removed).each((i, val) => {
                 $(val).show();
             });
             removed.splice(0);
 
-            $(elemArr).each((i, val) => {
 
+            $(elemArr).each((i, val) => {
                 if(val.data('type') !== sort) {
 
                     let hidden = $(val).hide();
+
                     removed.push(hidden);
                     
                     $grid.masonry( 'layout');
@@ -221,22 +233,31 @@ $(document).ready(function () {
     });
 
 
-    //ОКРЫТИЕ КАРТИНОК
+    // --- открытие картинок в новой вкладке ---
     function openImg(event) {
         event.preventDefault;
         let attr = $(event.target).children().attr('src');
         console.log($(event.target).children().attr('src'));
+
         sessionStorage.setItem('link', attr);    
 
         window.open('picture.html', '_blank');
     };
 
     
-
-    // СТРАНИЦА PICTURE
+    // --- страница с картинкой ---
     let link = sessionStorage.getItem('link');
+
     $('#picture').attr('src', link);
     $('#pictureWrap').css('backgroundImage', `url(${link})`);
+
+
+
+
+
+
+
+
 
 
 
