@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./src/js/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -14847,6 +14847,17 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/js/components/scrollTop.js":
+/*!****************************************!*\
+  !*** ./src/js/components/scrollTop.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\src\\js\\components\\scrollTop.js: Unexpected token, expected \";\" (5:13)\n\n  3 | export default class ScrollTop {\n  4 |     constructor(myElement) {\n> 5 |         this myElement = myElement;\n    |              ^\n  6 | \n  7 |     }\n  8 | \n    at Parser.raise (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:6325:17)\n    at Parser.unexpected (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:7642:16)\n    at Parser.semicolon (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:7624:40)\n    at Parser.parseExpressionStatement (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10364:10)\n    at Parser.parseStatementContent (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9963:19)\n    at Parser.parseStatement (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9829:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10405:25)\n    at Parser.parseBlockBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10392:10)\n    at Parser.parseBlock (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:10376:10)\n    at Parser.parseFunctionBody (C:\\Users\\Sunburst\\Desktop\\Программирование\\1 КУРСЫ ITCloud\\javascript\\проект 2\\training_project_2\\node_modules\\@babel\\parser\\lib\\index.js:9424:24)");
+
+/***/ }),
+
 /***/ "./src/js/index.js":
 /*!*************************!*\
   !*** ./src/js/index.js ***!
@@ -14866,6 +14877,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery_bridget__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
+/* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(components_scrollTop__WEBPACK_IMPORTED_MODULE_5__);
 
 
 
@@ -14874,7 +14887,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_2___default.a, jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
-imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
+imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // ======= ????
+
+
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   // --- VARIABLES ---
   var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
@@ -14882,7 +14897,9 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchField');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
   var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#navInner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // --- FUNCTIONS ---
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // ===== ??????
+
+  var scrollTop = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5___default.a('#scrollTop'); // --- FUNCTIONS ---
   // show search
 
   function showSearch(e) {
@@ -15062,8 +15079,40 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")"));
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // // show scroll-up button
+  // let $windowHeight = $(window).height();
+  // let $scrollTop;
+  // $(document).on('scroll', function() {
+  //     $scrollTop = $(document).scrollTop();
+  //     if($scrollTop >= $windowHeight) {
+  //         $('#scrollTop').show(500);
+  //     } else {
+  //         $('#scrollTop').hide(500);
+  //     }
+  // });
+  // // scrollTop
+  // $('#scrollTop').on('click', function() {
+  //     console.log($scrollTop );
+  //     $scrollTop = 0;
+  //     console.log($scrollTop );
+  //     $('html').animate({   
+  // 		scrollTop: '0'
+  // 	}, 500); 
+  // });
 });
+
+/***/ }),
+
+/***/ 0:
+/*!****************************************************************!*\
+  !*** multi ./src/js/index.js ./src/js/components/scrollTop.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\index.js */"./src/js/index.js");
+module.exports = __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\scrollTop.js */"./src/js/components/scrollTop.js");
+
 
 /***/ })
 

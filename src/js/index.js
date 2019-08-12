@@ -8,6 +8,8 @@ import imagesLoaded from 'imagesloaded';
 jQueryBridget('masonry', Masonry, $);
 imagesLoaded.makeJQueryPlugin( $ );
 
+// ======= ????
+import ScrollTop from 'components/scrollTop';
 
 
 $(document).ready(function () {
@@ -21,6 +23,8 @@ $(document).ready(function () {
     const $burger = $('#burger');
 
 
+    // ===== ??????
+    const scrollTop = new ScrollTop('#scrollTop');
     // --- FUNCTIONS ---
 
     // show search
@@ -233,5 +237,33 @@ $(document).ready(function () {
     let link = sessionStorage.getItem('link');
     $('#picture').attr('src', link);
     $('#pictureWrap').css('backgroundImage', `url(${link})`);
-       
+
+
+
+    // // show scroll-up button
+    // let $windowHeight = $(window).height();
+    // let $scrollTop;
+
+    // $(document).on('scroll', function() {
+    //     $scrollTop = $(document).scrollTop();
+
+    //     if($scrollTop >= $windowHeight) {
+    //         $('#scrollTop').show(500);
+              
+    //     } else {
+    //         $('#scrollTop').hide(500);
+    //     }
+    // });
+
+    // // scrollTop
+    // $('#scrollTop').on('click', function() {
+    //     console.log($scrollTop );
+    //     $scrollTop = 0;
+    //     console.log($scrollTop );
+
+    //     $('html').animate({   
+	// 		scrollTop: '0'
+	// 	}, 500); 
+    // });
+
 });
