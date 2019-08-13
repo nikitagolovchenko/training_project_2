@@ -1,28 +1,24 @@
 .search {
     position: relative;
     z-index: 1;
-    left: 241px;
+    left: rem(241px);
 
     @media (max-width: $screen-sm) {
-        padding-bottom: 10px;
+        padding-bottom: rem(10px);
     }
 
     &__form {
-        margin-right: 30px;
-        margin-left: 10px;
+        margin-right: rem(30px);
+        margin-left: rem(10px);
         display: flex;
         align-items: center;
-
-        @media (max-width: $screen-md) {
-            margin-right: 10px;
-        }
     }
 
     &__field {
         border: 0;
         outline: none;
-        padding: 2px;
-        margin: 0 15px;
+        padding: rem(2px);
+        margin: 0 rem(15px);
         background-color: $white-body;
         border-bottom: 1px solid transparent;
         

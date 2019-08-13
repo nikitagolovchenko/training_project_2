@@ -8,13 +8,16 @@ import imagesLoaded from 'imagesloaded';
 jQueryBridget('masonry', Masonry, $);
 imagesLoaded.makeJQueryPlugin( $ );
 
-// импорт компонента:
+// components:
 import ScrollTop from 'components/scrollTop';
+import ShowHideSearch from 'components/navSearch';
 
 
 $(document).ready(function () {
-    // вызов компонента:
+
     const scrollElement = new ScrollTop('#scrollTop');
+    const search = new ShowHideSearch('#search', '#searchField', '#searchSubmit');
+    console.log(search);
 
 
     // --- variables ---
@@ -25,29 +28,6 @@ $(document).ready(function () {
     const $navInner = $('#navInner');
     const $burger = $('#burger');
  
-
-    // show search function
-    function showSearch(e) {
-        if (!$search.hasClass('active')) {
-            e.preventDefault;
-            $searchField.focus();
-            $search.addClass('active').animate({
-                left: '0',
-            }, 400);
-        }
-    };
-
-    // hide search function
-    function closeSearch(e) {
-        if ($search.hasClass('active')) {
-            if (!$(e.target).closest($search).length) {
-                $search.animate({
-                    left: '241px'
-                }, 400);
-                $search.removeClass('active');
-            }
-        }
-    };
 
     // _show nav
     function navInnerShow() {
@@ -71,7 +51,6 @@ $(document).ready(function () {
         $(this).toggleClass('active');
         $(this).hasClass('active') ? navInnerShow() : navInnerHide();
 
-        // hide burger/nav when you click anywhere 
         $(document).on('click', function (e) {
             if ($burger.hasClass('active')) {
 
@@ -99,15 +78,6 @@ $(document).ready(function () {
             $navInner.css('width', '0');
         }
 
-        if (this.innerWidth > 768) {
-            $searchSubmit.on('mouseover', showSearch);
-            $(document).on('click', closeSearch);
-
-        } else {
-            $searchSubmit.off('mouseover', showSearch);
-            $(document).off('click', closeSearch);
-            $search.css('left', '0');
-        }
     });
 
     $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
@@ -137,7 +107,7 @@ $(document).ready(function () {
     // --- ajax request при загрузке страницы ---
     let xhrLoad = $.get($requestUrl, function (data) {
 
-        for(let i = 0; i < 10; i++) {
+        for(let i = 0; i < 9; i++) {
             picturesAmount++;
 
             let link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
@@ -155,7 +125,7 @@ $(document).ready(function () {
         }
     });
 
-    // открытваем картинку в новой вкладке
+    // открытие картинки в новой вкладке
     xhrLoad.then(function() {
         $('.works__link').off('click', openImg).on('click', openImg);
     });
@@ -188,7 +158,7 @@ $(document).ready(function () {
             }
         });
 
-        // открытваем картинку в новой вкладке
+        // открытие картинки в новой вкладке
         httpRec.then(function() {
             $('.works__link').off('click', openImg).on('click', openImg);
         })
@@ -200,7 +170,10 @@ $(document).ready(function () {
     let removed = [];
 
     $('[data-sort]').on('click', function() {
-        // значение атрибута data:
+        
+        $('[data-sort]').removeClass('active');
+        $(this).addClass('active');
+        
         let sort = $(this).data('sort');
 
         if(sort === 'all') {
@@ -245,7 +218,7 @@ $(document).ready(function () {
     };
 
     
-    // --- страница с картинкой ---
+    // --- picture.html ---
     let link = sessionStorage.getItem('link');
 
     $('#picture').attr('src', link);

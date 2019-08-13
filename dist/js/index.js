@@ -444,6 +444,111 @@ module.exports = function (exec) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/fix-regexp-well-known-symbol-logic.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/core-js/internals/fix-regexp-well-known-symbol-logic.js ***!
+  \******************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
+var redefine = __webpack_require__(/*! ../internals/redefine */ "./node_modules/core-js/internals/redefine.js");
+var fails = __webpack_require__(/*! ../internals/fails */ "./node_modules/core-js/internals/fails.js");
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var regexpExec = __webpack_require__(/*! ../internals/regexp-exec */ "./node_modules/core-js/internals/regexp-exec.js");
+
+var SPECIES = wellKnownSymbol('species');
+
+var REPLACE_SUPPORTS_NAMED_GROUPS = !fails(function () {
+  // #replace needs built-in support for named groups.
+  // #match works fine because it just return the exec results, even if it has
+  // a "grops" property.
+  var re = /./;
+  re.exec = function () {
+    var result = [];
+    result.groups = { a: '7' };
+    return result;
+  };
+  return ''.replace(re, '$<a>') !== '7';
+});
+
+// Chrome 51 has a buggy "split" implementation when RegExp#exec !== nativeExec
+// Weex JS has frozen built-in prototypes, so use try / catch wrapper
+var SPLIT_WORKS_WITH_OVERWRITTEN_EXEC = !fails(function () {
+  var re = /(?:)/;
+  var originalExec = re.exec;
+  re.exec = function () { return originalExec.apply(this, arguments); };
+  var result = 'ab'.split(re);
+  return result.length !== 2 || result[0] !== 'a' || result[1] !== 'b';
+});
+
+module.exports = function (KEY, length, exec, sham) {
+  var SYMBOL = wellKnownSymbol(KEY);
+
+  var DELEGATES_TO_SYMBOL = !fails(function () {
+    // String methods call symbol-named RegEp methods
+    var O = {};
+    O[SYMBOL] = function () { return 7; };
+    return ''[KEY](O) != 7;
+  });
+
+  var DELEGATES_TO_EXEC = DELEGATES_TO_SYMBOL && !fails(function () {
+    // Symbol-named RegExp methods call .exec
+    var execCalled = false;
+    var re = /a/;
+    re.exec = function () { execCalled = true; return null; };
+
+    if (KEY === 'split') {
+      // RegExp[@@split] doesn't call the regex's exec method, but first creates
+      // a new one. We need to return the patched regex when creating the new one.
+      re.constructor = {};
+      re.constructor[SPECIES] = function () { return re; };
+    }
+
+    re[SYMBOL]('');
+    return !execCalled;
+  });
+
+  if (
+    !DELEGATES_TO_SYMBOL ||
+    !DELEGATES_TO_EXEC ||
+    (KEY === 'replace' && !REPLACE_SUPPORTS_NAMED_GROUPS) ||
+    (KEY === 'split' && !SPLIT_WORKS_WITH_OVERWRITTEN_EXEC)
+  ) {
+    var nativeRegExpMethod = /./[SYMBOL];
+    var methods = exec(SYMBOL, ''[KEY], function (nativeMethod, regexp, str, arg2, forceStringMethod) {
+      if (regexp.exec === regexpExec) {
+        if (DELEGATES_TO_SYMBOL && !forceStringMethod) {
+          // The native String method already delegates to @@method (this
+          // polyfilled function), leasing to infinite recursion.
+          // We avoid it by directly calling the native @@method method.
+          return { done: true, value: nativeRegExpMethod.call(regexp, str, arg2) };
+        }
+        return { done: true, value: nativeMethod.call(str, regexp, arg2) };
+      }
+      return { done: false };
+    });
+    var stringMethod = methods[0];
+    var regexMethod = methods[1];
+
+    redefine(String.prototype, KEY, stringMethod);
+    redefine(RegExp.prototype, SYMBOL, length == 2
+      // 21.2.5.8 RegExp.prototype[@@replace](string, replaceValue)
+      // 21.2.5.11 RegExp.prototype[@@split](string, limit)
+      ? function (string, arg) { return regexMethod.call(string, this, arg); }
+      // 21.2.5.6 RegExp.prototype[@@match](string)
+      // 21.2.5.9 RegExp.prototype[@@search](string)
+      : function (string) { return regexMethod.call(string, this); }
+    );
+    if (sham) hide(RegExp.prototype[SYMBOL], 'sham', true);
+  }
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/function-bind.js":
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/internals/function-bind.js ***!
@@ -1054,6 +1159,133 @@ shared('inspectSource', function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/regexp-exec-abstract.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/core-js/internals/regexp-exec-abstract.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var classof = __webpack_require__(/*! ./classof-raw */ "./node_modules/core-js/internals/classof-raw.js");
+var regexpExec = __webpack_require__(/*! ./regexp-exec */ "./node_modules/core-js/internals/regexp-exec.js");
+
+// `RegExpExec` abstract operation
+// https://tc39.github.io/ecma262/#sec-regexpexec
+module.exports = function (R, S) {
+  var exec = R.exec;
+  if (typeof exec === 'function') {
+    var result = exec.call(R, S);
+    if (typeof result !== 'object') {
+      throw TypeError('RegExp exec method returned something other than an Object or null');
+    }
+    return result;
+  }
+
+  if (classof(R) !== 'RegExp') {
+    throw TypeError('RegExp#exec called on incompatible receiver');
+  }
+
+  return regexpExec.call(R, S);
+};
+
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/regexp-exec.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/core-js/internals/regexp-exec.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var regexpFlags = __webpack_require__(/*! ./regexp-flags */ "./node_modules/core-js/internals/regexp-flags.js");
+
+var nativeExec = RegExp.prototype.exec;
+// This always refers to the native implementation, because the
+// String#replace polyfill uses ./fix-regexp-well-known-symbol-logic.js,
+// which loads this file before patching the method.
+var nativeReplace = String.prototype.replace;
+
+var patchedExec = nativeExec;
+
+var UPDATES_LAST_INDEX_WRONG = (function () {
+  var re1 = /a/;
+  var re2 = /b*/g;
+  nativeExec.call(re1, 'a');
+  nativeExec.call(re2, 'a');
+  return re1.lastIndex !== 0 || re2.lastIndex !== 0;
+})();
+
+// nonparticipating capturing group, copied from es5-shim's String#split patch.
+var NPCG_INCLUDED = /()??/.exec('')[1] !== undefined;
+
+var PATCH = UPDATES_LAST_INDEX_WRONG || NPCG_INCLUDED;
+
+if (PATCH) {
+  patchedExec = function exec(str) {
+    var re = this;
+    var lastIndex, reCopy, match, i;
+
+    if (NPCG_INCLUDED) {
+      reCopy = new RegExp('^' + re.source + '$(?!\\s)', regexpFlags.call(re));
+    }
+    if (UPDATES_LAST_INDEX_WRONG) lastIndex = re.lastIndex;
+
+    match = nativeExec.call(re, str);
+
+    if (UPDATES_LAST_INDEX_WRONG && match) {
+      re.lastIndex = re.global ? match.index + match[0].length : lastIndex;
+    }
+    if (NPCG_INCLUDED && match && match.length > 1) {
+      // Fix browsers whose `exec` methods don't consistently return `undefined`
+      // for NPCG, like IE8. NOTE: This doesn' work for /(.?)?/
+      nativeReplace.call(match[0], reCopy, function () {
+        for (i = 1; i < arguments.length - 2; i++) {
+          if (arguments[i] === undefined) match[i] = undefined;
+        }
+      });
+    }
+
+    return match;
+  };
+}
+
+module.exports = patchedExec;
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/regexp-flags.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/internals/regexp-flags.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
+
+// `RegExp.prototype.flags` getter implementation
+// https://tc39.github.io/ecma262/#sec-get-regexp.prototype.flags
+module.exports = function () {
+  var that = anObject(this);
+  var result = '';
+  if (that.global) result += 'g';
+  if (that.ignoreCase) result += 'i';
+  if (that.multiline) result += 'm';
+  if (that.dotAll) result += 's';
+  if (that.unicode) result += 'u';
+  if (that.sticky) result += 'y';
+  return result;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/require-object-coercible.js":
 /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/require-object-coercible.js ***!
@@ -1066,6 +1298,23 @@ shared('inspectSource', function (it) {
 module.exports = function (it) {
   if (it == undefined) throw TypeError("Can't call method on " + it);
   return it;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/same-value.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/internals/same-value.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// `SameValue` abstract operation
+// https://tc39.github.io/ecma262/#sec-samevalue
+module.exports = Object.is || function is(x, y) {
+  // eslint-disable-next-line no-self-compare
+  return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
 };
 
 
@@ -1411,6 +1660,71 @@ var objectDefinePropertyModile = __webpack_require__(/*! ../internals/object-def
 // https://tc39.github.io/ecma262/#sec-object.defineproperty
 $({ target: 'Object', stat: true, forced: !DESCRIPTORS, sham: !DESCRIPTORS }, {
   defineProperty: objectDefinePropertyModile.f
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.regexp.exec.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.regexp.exec.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var exec = __webpack_require__(/*! ../internals/regexp-exec */ "./node_modules/core-js/internals/regexp-exec.js");
+
+$({ target: 'RegExp', proto: true, forced: /./.exec !== exec }, {
+  exec: exec
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.string.search.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es.string.search.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var fixRegExpWellKnownSymbolLogic = __webpack_require__(/*! ../internals/fix-regexp-well-known-symbol-logic */ "./node_modules/core-js/internals/fix-regexp-well-known-symbol-logic.js");
+var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
+var requireObjectCoercible = __webpack_require__(/*! ../internals/require-object-coercible */ "./node_modules/core-js/internals/require-object-coercible.js");
+var sameValue = __webpack_require__(/*! ../internals/same-value */ "./node_modules/core-js/internals/same-value.js");
+var regExpExec = __webpack_require__(/*! ../internals/regexp-exec-abstract */ "./node_modules/core-js/internals/regexp-exec-abstract.js");
+
+// @@search logic
+fixRegExpWellKnownSymbolLogic('search', 1, function (SEARCH, nativeSearch, maybeCallNative) {
+  return [
+    // `String.prototype.search` method
+    // https://tc39.github.io/ecma262/#sec-string.prototype.search
+    function search(regexp) {
+      var O = requireObjectCoercible(this);
+      var searcher = regexp == undefined ? undefined : regexp[SEARCH];
+      return searcher !== undefined ? searcher.call(regexp, O) : new RegExp(regexp)[SEARCH](String(O));
+    },
+    // `RegExp.prototype[@@search]` method
+    // https://tc39.github.io/ecma262/#sec-regexp.prototype-@@search
+    function (regexp) {
+      var res = maybeCallNative(nativeSearch, regexp, this);
+      if (res.done) return res.value;
+
+      var rx = anObject(regexp);
+      var S = String(this);
+
+      var previousLastIndex = rx.lastIndex;
+      if (!sameValue(previousLastIndex, 0)) rx.lastIndex = 0;
+      var result = regExpExec(rx, S);
+      if (!sameValue(rx.lastIndex, previousLastIndex)) rx.lastIndex = previousLastIndex;
+      return result === null ? -1 : result.index;
+    }
+  ];
 });
 
 
@@ -14945,49 +15259,90 @@ module.exports = g;
 /*!****************************************!*\
   !*** ./src/js/components/navSearch.js ***!
   \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// import $ from 'jquery';
-// export default class ShowHideSearch {
-//     constructor(search, searchField, searchSubmit) {
-//         this.search = search;
-//         this.searchField = searchField;
-//         this.searchSubmit = searchSubmit;
-//         this.showSearch = this.showSearch.bind(this);
-//         this.closeSearch = this.closeSearch.bind(this);
-//         $(window).on('load resize orientationchange', function() {
-//             if (this.innerWidth > 768) {
-//                 $(searchSubmit).on('mouseover', this.showSearch);
-//                 $(document).on('click', this.closeSearch);
-//             } else {
-//                 $(searchSubmit).off('mouseover', this.showSearch);
-//                 $(document).off('click',  this.closeSearch);
-//                 $(this.search).css('left', '0');
-//             }
-//         });
-//     }
-//     showSearch(e) {
-//         console.log(this);
-//         if(!$(this.search).hasClass('active')) {
-//             e.preventDefault;
-//             $(this.searchField).focus();
-//             $(this.search).addClass('active').animate({
-//                 left: '0',
-//             }, 400);
-//         }
-//     }
-//     closeSearch(e) {
-//         if ($(this.search).hasClass('active')) {
-//             if (!$(e.target).closest($(this.search)).length) {
-//                 $(this.search).animate({
-//                     left: '241px'
-//                 }, 400);
-//                 $(this.search).removeClass('active');
-//             }
-//         }
-//     }
-// }
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ShowHideSearch; });
+/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.function.bind */ "./node_modules/core-js/modules/es.function.bind.js");
+/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.define-property */ "./node_modules/core-js/modules/es.object.define-property.js");
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! core-js/modules/es.regexp.exec */ "./node_modules/core-js/modules/es.regexp.exec.js");
+/* harmony import */ var core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_regexp_exec__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var core_js_modules_es_string_search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! core-js/modules/es.string.search */ "./node_modules/core-js/modules/es.string.search.js");
+/* harmony import */ var core_js_modules_es_string_search__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_search__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_4__);
+
+
+
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var ShowHideSearch =
+/*#__PURE__*/
+function () {
+  function ShowHideSearch(search, searchField, searchSubmit) {
+    var _this = this;
+
+    _classCallCheck(this, ShowHideSearch);
+
+    this.search = search;
+    this.searchField = searchField;
+    this.searchSubmit = searchSubmit;
+    jquery__WEBPACK_IMPORTED_MODULE_4___default()(window).on('load resize orientationchange', function () {
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).css('left', '241px');
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).removeClass('active');
+
+      if (window.innerWidth > 768) {
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchSubmit).on('mouseover', _this.showSearch.bind(_this));
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', _this.closeSearch.bind(_this));
+      } else {
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchSubmit).off('mouseover', _this.showSearch.bind(_this));
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).off('click', _this.closeSearch.bind(_this));
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).css('left', '0');
+      }
+    });
+  }
+
+  _createClass(ShowHideSearch, [{
+    key: "showSearch",
+    value: function showSearch(e) {
+      if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
+        e.preventDefault;
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchField).focus();
+        jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).addClass('active').animate({
+          left: '0'
+        }, 400);
+      }
+    }
+  }, {
+    key: "closeSearch",
+    value: function closeSearch(e) {
+      if (jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
+        if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(e.target).closest(jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search)).length) {
+          jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).animate({
+            left: '241px'
+          }, 400);
+          jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
+        }
+      }
+    }
+  }]);
+
+  return ShowHideSearch;
+}();
+
+
 
 /***/ }),
 
@@ -15079,6 +15434,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
+/* harmony import */ var components_navSearch__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! components/navSearch */ "./src/js/components/navSearch.js");
 
 
 
@@ -15087,44 +15443,21 @@ __webpack_require__.r(__webpack_exports__);
 
 
 jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_2___default.a, jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
-imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // импорт компонента:
+imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // components:
+
 
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
-  // вызов компонента:
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop'); // --- variables ---
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop');
+  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]('#search', '#searchField', '#searchSubmit');
+  console.log(search); // --- variables ---
 
   var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
   var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchSubmit');
   var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchField');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
   var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#navInner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // show search function
-
-  function showSearch(e) {
-    if (!$search.hasClass('active')) {
-      e.preventDefault;
-      $searchField.focus();
-      $search.addClass('active').animate({
-        left: '0'
-      }, 400);
-    }
-  }
-
-  ; // hide search function
-
-  function closeSearch(e) {
-    if ($search.hasClass('active')) {
-      if (!jquery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).closest($search).length) {
-        $search.animate({
-          left: '241px'
-        }, 400);
-        $search.removeClass('active');
-      }
-    }
-  }
-
-  ; // _show nav
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // _show nav
 
   function navInnerShow() {
     $nav.show();
@@ -15147,8 +15480,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   function toggleNavBurger() {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).toggleClass('active');
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).hasClass('active') ? navInnerShow() : navInnerHide(); // hide burger/nav when you click anywhere 
-
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).hasClass('active') ? navInnerShow() : navInnerHide();
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', function (e) {
       if ($burger.hasClass('active')) {
         if (!jquery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).closest($burger).length && e.target !== $navInner[0]) {
@@ -15173,15 +15505,6 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
       $nav.hide();
       $navInner.css('width', '0');
     }
-
-    if (this.innerWidth > 768) {
-      $searchSubmit.on('mouseover', showSearch);
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', closeSearch);
-    } else {
-      $searchSubmit.off('mouseover', showSearch);
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).off('click', closeSearch);
-      $search.css('left', '0');
-    }
   });
   $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // =====================================================
 
@@ -15199,7 +15522,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   var elemArr = []; // --- ajax request при загрузке страницы ---
 
   var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 9; i++) {
       picturesAmount++;
 
       var _link = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<a class=\"works__link icon-search\" href=\"javascript:void(0)\"></a>");
@@ -15212,7 +15535,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
         $grid.masonry('layout');
       });
     }
-  }); // открытваем картинку в новой вкладке
+  }); // открытие картинки в новой вкладке
 
   xhrLoad.then(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
@@ -15237,7 +15560,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
           return;
         }
       }
-    }); // открытваем картинку в новой вкладке
+    }); // открытие картинки в новой вкладке
 
     httpRec.then(function () {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
@@ -15247,7 +15570,8 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   var removed = [];
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('[data-sort]').on('click', function () {
-    // значение атрибута data:
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()('[data-sort]').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).addClass('active');
     var sort = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('sort');
 
     if (sort === 'all') {
@@ -15281,7 +15605,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     window.open('picture.html', '_blank');
   }
 
-  ; // --- страница с картинкой ---
+  ; // --- picture.html ---
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);

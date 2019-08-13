@@ -1,7 +1,7 @@
 .burger {
 	display: none;
 	background-color: $orange;
-	padding: 18px 14px;
+	padding: rem(18px) rem(14px);
 	border-radius: 3px;
 	cursor: pointer;
 	position: relative;
@@ -11,14 +11,10 @@
 	@media (max-width: $screen-lg) {
         display: block;
 	}
-	
-	@media (max-width: $screen-sm) {
-		padding: 18px 7px;
-	}
 
 	&__elements {
 		display: block;
-		width: 30px;
+		width: rem(30px);
 		height: 3px;
 		background-color: #fff;
 		position: relative;

@@ -4,19 +4,31 @@
     }
     
     &__item {
-        padding: 0 25px;
+        padding: 0 rem(25px);
         display: block;
     }
     
     &__link {
-        padding: 10px 0;
+        padding: rem(10px) 0;
         color: $white;
         text-transform: uppercase;
-        border-bottom: 2px solid transparent;
-        @extend %transition;
+        position:  relative;
+        
+        &:after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: $white;
+            transform: scaleX(0);
+            @extend %transition;
+        }
 
-        &:hover {
-            border-bottom: 2px solid $white;
+        &:hover:after,
+        &.active:after {
+            transform: scaleX(1);
         }
     }
 
@@ -24,10 +36,14 @@
         
         .nav__link {
             color: $gray;
+            @extend %transition;
+
+            &:after {
+                background-color: $orange;
+            }
             
             &:hover {
                 color: $gray-dark;
-                border-bottom-color: $orange;
             }
         }
     }

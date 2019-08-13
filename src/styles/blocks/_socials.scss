@@ -1,6 +1,6 @@
 .socials {
     background-color: $white-body;
-    padding: 15px 20px;
+    padding: rem(15px) rem(20px);
     border-left: 1px solid $gray-cfcfcf;
     border-right: 1px solid $gray-cfcfcf;
 
@@ -13,7 +13,7 @@
     }
 
     &__item {
-        padding: 0 8px;
+        padding: 0 rem(8px);
         border-left: 1px solid $gray-e3e3e3;
 
         &:first-child {

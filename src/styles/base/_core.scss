@@ -5,21 +5,13 @@
 	height: 100%;
 	position: relative;
 	overflow: hidden;
-    padding-top: 200px;
-
-    @media (max-width: $screen-lg) {
-        padding-top: 180px;
-    }
-
-    @media (max-width: $screen-sm) {
-        padding-top: 190px;
-    }
+    padding-top: rem(200px);
 }
 
 .container {
-    max-width: 1200px;
+    max-width: rem(1200px);
     margin: 0 auto;
-    padding: 0 15px;
+    padding: 0 rem(15px);
 }
 
 html, body {
@@ -28,6 +20,8 @@ html, body {
     font-size: $font-size-main;
     font-weight: $light;
     background-color: $white-body;
+
+    min-width: 320px;
 
     @media (max-width: $screen-sm) {
         font-size: 12px;

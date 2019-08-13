@@ -1,14 +1,18 @@
 .scroll-top {
     position: fixed;
     z-index: 100;
-    bottom: 15px;
-    right: 15px;
-    width: 50px;
-    height: 50px;
+    bottom: rem(15px);
+    right: rem(15px);
+    width: rem(50px);
+    height: rem(50px);
     border-radius: 50%;
     background-color: rgba($orange, 0.8);
     cursor: pointer;
     display: none;
+
+    &:hover &__item {
+        color: $gray-dark;
+    }
 
     &__inner {
         width: 100%;
@@ -19,7 +23,8 @@
     }
     
     &__item {
-        font-size: 2em;
-        color: $gray-dark;
+        font-size: 2rem;
+        color: $white;
+        @extend %transition;
     }
 }

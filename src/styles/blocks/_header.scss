@@ -7,7 +7,7 @@
 
 	&-top {
 		border-bottom: 1px solid $gray-cfcfcf;
-		box-shadow: 0 2px 5px $gray-cfcfcf;
+		box-shadow: 0 rem(2px) rem(5px) $gray-cfcfcf;
 		background-color: $white-body;
 
 		&__inner {
@@ -35,7 +35,7 @@
 			font-weight: $regular;
 
 			@media (max-width: $screen-md) {
-				padding-top: 10px;
+				padding-top: rem(10px);
 			}
 
 			span {
@@ -46,17 +46,17 @@
 	}
 
 	&-bottom {
-		padding-top: 50px;
-		padding-bottom: 20px;
+		padding-top: rem(50px);
+		padding-bottom: rem(20px);
 		position: relative;
 		
 		@media (max-width: $screen-lg) {
-			padding-top: 20px;
+			padding-top: rem(20px);
 			background-color: rgba($gray-dark, 0.3);
 		}
 
 		@media (max-width: $screen-sm) {
-			padding: 10px 0;
+			padding: rem(10px) 0;
 		}
 
 		&__inner {
@@ -87,7 +87,7 @@
 					width: 0;
 					height: 100%;
 					margin-left: auto;
-					padding-top: 70px;
+					padding-top: rem(70px);
 				}
 			}
 
@@ -100,7 +100,7 @@
 			&-link {
 				@media (max-width: $screen-lg) {
 					text-align: center;
-					padding: 15px 20px;
+					padding: rem(15px) rem(20px);
 				}
 
 				&:hover {

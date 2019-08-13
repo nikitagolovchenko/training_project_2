@@ -1,11 +1,10 @@
 .button {
-    padding: 14px 35px;
+    padding: rem(14px) rem(35px);
     color: $white;
     background-color: $orange;
     border: 0;
     border-radius: 2px;
     text-transform: uppercase;
-    outline: none;
     @extend %transition;
     
     &:hover {

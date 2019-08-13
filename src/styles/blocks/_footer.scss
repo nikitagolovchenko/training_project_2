@@ -1,17 +1,5 @@
 .footer {
-    padding: 40px 0 90px;
-
-    @media (max-width: $screen-lg) {
-        padding-bottom: 65px;
-    }
-
-    @media (max-width: $screen-md) {
-        padding: 20px 0 50px;
-    }
-
-    @media (max-width: $screen-sm) {
-        padding: 20px 0;
-    }
+    padding: rem(40px) 0 rem(90px);
 
     &__inner {
         display: flex;
