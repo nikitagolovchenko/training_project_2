@@ -15575,14 +15575,14 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     var sort = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('sort');
 
     if (sort === 'all') {
-      // показываем все скрытые картинки и очищаем массив
+      // показывает скрытые картинки и очищает массив
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
         $grid.masonry('layout');
       });
       removed.splice(0);
     } else {
-      // показываем все скрытые картинки и очищаем массив
+      // показывает скрытые картинки и очищает массив
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
       });
@@ -15609,26 +15609,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // // show scroll-up button
-  // let $windowHeight = $(window).height();
-  // let $scrollTop;
-  // $(document).on('scroll', function() {
-  //     $scrollTop = $(document).scrollTop();
-  //     if($scrollTop >= $windowHeight) {
-  //         $('#scrollTop').show(500);
-  //     } else {
-  //         $('#scrollTop').hide(500);
-  //     }
-  // });
-  // // scrollTop
-  // $('#scrollTop').on('click', function() {
-  //     console.log($scrollTop );
-  //     $scrollTop = 0;
-  //     console.log($scrollTop );
-  //     $('html').animate({   
-  // 		scrollTop: '0'
-  // 	}, 500); 
-  // });
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")"));
 });
 
 /***/ }),

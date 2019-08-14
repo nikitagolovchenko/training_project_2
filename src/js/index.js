@@ -177,7 +177,7 @@ $(document).ready(function () {
         let sort = $(this).data('sort');
 
         if(sort === 'all') {
-            // показываем все скрытые картинки и очищаем массив
+            // показывает скрытые картинки и очищает массив
             $(removed).each((i, val) => {
                 $(val).show();
                 $grid.masonry( 'layout');
@@ -185,7 +185,7 @@ $(document).ready(function () {
             removed.splice(0);
 
         } else {
-            // показываем все скрытые картинки и очищаем массив
+            // показывает скрытые картинки и очищает массив
             $(removed).each((i, val) => {
                 $(val).show();
             });
@@ -223,41 +223,5 @@ $(document).ready(function () {
 
     $('#picture').attr('src', link);
     $('#pictureWrap').css('backgroundImage', `url(${link})`);
-
-
-
-
-
-
-
-
-
-
-
-    // // show scroll-up button
-    // let $windowHeight = $(window).height();
-    // let $scrollTop;
-
-    // $(document).on('scroll', function() {
-    //     $scrollTop = $(document).scrollTop();
-
-    //     if($scrollTop >= $windowHeight) {
-    //         $('#scrollTop').show(500);
-              
-    //     } else {
-    //         $('#scrollTop').hide(500);
-    //     }
-    // });
-
-    // // scrollTop
-    // $('#scrollTop').on('click', function() {
-    //     console.log($scrollTop );
-    //     $scrollTop = 0;
-    //     console.log($scrollTop );
-
-    //     $('html').animate({   
-	// 		scrollTop: '0'
-	// 	}, 500); 
-    // });
 
 });
