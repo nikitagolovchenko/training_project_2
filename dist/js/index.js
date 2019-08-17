@@ -15291,51 +15291,57 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ShowHideSearch =
 /*#__PURE__*/
 function () {
-  function ShowHideSearch(search, searchField, searchSubmit) {
-    var _this = this;
-
+  function ShowHideSearch(search, searchField, searchSubmit, searchClose) {
     _classCallCheck(this, ShowHideSearch);
 
     this.search = search;
     this.searchField = searchField;
     this.searchSubmit = searchSubmit;
-    jquery__WEBPACK_IMPORTED_MODULE_4___default()(window).on('load resize orientationchange', function () {
-      jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).css('left', '241px');
-      jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).removeClass('active');
-
-      if (window.innerWidth > 768) {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchSubmit).on('mouseover', _this.showSearch.bind(_this));
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', _this.closeSearch.bind(_this));
-      } else {
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchSubmit).off('mouseover', _this.showSearch.bind(_this));
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).off('click', _this.closeSearch.bind(_this));
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.search).css('left', '0');
-      }
-    });
+    this.searchClose = searchClose;
   }
 
   _createClass(ShowHideSearch, [{
     key: "showSearch",
     value: function showSearch(e) {
-      if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
-        e.preventDefault;
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchField).focus();
-        jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).addClass('active').animate({
-          left: '0'
-        }, 400);
+      var _this = this;
+
+      e.preventDefault();
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchField).focus();
+
+      if (window.innerWidth > 768) {
+        if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
+          jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).addClass('active').animate({
+            left: '0'
+          }, 300, function () {
+            jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchField).focus();
+          });
+        }
       }
     }
   }, {
     key: "closeSearch",
     value: function closeSearch(e) {
       if (jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
-        if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(e.target).closest(jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search)).length) {
+        if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(e.target).closest(jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search)).length || e.target === this.searchClose[0]) {
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).animate({
             left: '241px'
-          }, 400);
+          }, 300);
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
         }
       }
+    }
+  }, {
+    key: "eventSetting",
+    value: function eventSetting() {
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).css('left', '241px');
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchSubmit).on('click', this.showSearch.bind(this));
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', this.closeSearch.bind(this));
+    }
+  }, {
+    key: "eventCancel",
+    value: function eventCancel() {
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).css('left', '0');
     }
   }]);
 
@@ -15448,16 +15454,18 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEB
 
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop');
-  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]('#search', '#searchField', '#searchSubmit');
-  console.log(search); // --- variables ---
-
+  // --- variables ---
   var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
-  var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchSubmit');
-  var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#searchField');
+  var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-submit');
+  var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-field');
+  var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#close-search');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
-  var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#navInner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // _show nav
+  var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav-inner');
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // component instances
+
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop');
+  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]($search, $searchField, $searchSubmit, $closeSearch);
+  console.log(search); // _show nav
 
   function navInnerShow() {
     $nav.show();
@@ -15504,6 +15512,12 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     } else {
       $nav.hide();
       $navInner.css('width', '0');
+    }
+
+    if (this.innerWidth > 768) {
+      search.eventSetting();
+    } else {
+      search.eventCancel();
     }
   });
   $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // =====================================================

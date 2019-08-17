@@ -13,21 +13,22 @@ import ScrollTop from 'components/scrollTop';
 import ShowHideSearch from 'components/navSearch';
 
 
-$(document).ready(function () {
-
-    const scrollElement = new ScrollTop('#scrollTop');
-    const search = new ShowHideSearch('#search', '#searchField', '#searchSubmit');
-    console.log(search);
-
-
+$(document).ready(function () {    
+    
     // --- variables ---
     const $search = $('#search');
-    const $searchSubmit = $('#searchSubmit');
-    const $searchField = $('#searchField');
+    const $searchSubmit = $('#search-submit');
+    const $searchField = $('#search-field');
+    const $closeSearch = $('#close-search');
     const $nav = $('#nav');
-    const $navInner = $('#navInner');
+    const $navInner = $('#nav-inner');
     const $burger = $('#burger');
- 
+    
+    // component instances
+    const scrollElement = new ScrollTop('#scrollTop');
+    const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch);
+    console.log(search);
+    
 
     // _show nav
     function navInnerShow() {
@@ -68,14 +69,22 @@ $(document).ready(function () {
     $(window).on('load resize orientationchange', function () {
         // resizing errors correction
         $burger.removeClass('active');
-
+        
         if (this.innerWidth > 992) {
             $nav.show();
             $navInner.css('width', '100%');
-
+            
         } else {
             $nav.hide();
             $navInner.css('width', '0');
+        }
+        
+        
+        if (this.innerWidth > 768) {
+            search.eventSetting();
+            
+        } else {
+            search.eventCancel();
         }
 
     });

@@ -20,8 +20,14 @@
         padding: rem(2px);
         margin: 0 rem(15px);
         background-color: $white-body;
-        border-bottom: 1px solid transparent;
-        
+        border-bottom: 1px solid $gray;
+       
+        @media (min-width: $screen-md) {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s linear, visibility 0.3s linear;
+        }
+
         &:focus {
             border-bottom: 1px solid $orange;
         }
@@ -36,8 +42,23 @@
         cursor: pointer;
         @extend %transition;
 
-        &:hover {
+        &:hover,
+        &:focus {
             color: $orange;
         }
+    }
+
+    &__close {
+        @media (min-width: $screen-md) {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s linear, visibility 0.3s linear;
+        }
+    }
+
+    &.active .search__field,
+    &.active .search__close {
+        opacity: 1;
+        visibility: visible;
     }
 }

@@ -98,6 +98,8 @@
 			}
 
 			&-link {
+				display: block;
+
 				@media (max-width: $screen-lg) {
 					text-align: center;
 					padding: rem(15px) rem(20px);

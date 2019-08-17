@@ -1,47 +1,50 @@
 import $ from 'jquery';
 
 export default class ShowHideSearch {
-    constructor(search, searchField, searchSubmit) {
+    constructor(search, searchField, searchSubmit, searchClose) {
         this.search = search;
         this.searchField = searchField;
         this.searchSubmit = searchSubmit;
-
-        $(window).on('load resize orientationchange', () => {
-            $(this.search).css('left', '241px');
-            $(this.search).removeClass('active');
-
-            if (window.innerWidth > 768) {
-                $(this.searchSubmit).on('mouseover', this.showSearch.bind(this));
-                $(document).on('click', this.closeSearch.bind(this));
-
-            } else {
-                $(this.searchSubmit).off('mouseover', this.showSearch.bind(this));
-                $(document).off('click',  this.closeSearch.bind(this));
-                $(this.search).css('left', '0');
-            }
-        });
+        this.searchClose = searchClose;
     }
 
-    showSearch(e) {        
-        if(!$(this.search).hasClass('active')) {
-            e.preventDefault;
+    showSearch(e) {   
+        e.preventDefault();
+        $(this.searchField).focus();        
 
-            $(this.searchField).focus();
-            $(this.search).addClass('active').animate({
-                left: '0',
-            }, 400);
+        if(window.innerWidth > 768) {
+            if(!$(this.search).hasClass('active')) {
+
+                $(this.search).addClass('active').animate({
+                    left: '0',
+                }, 300, () => {
+                    $(this.searchField).focus();
+                });
+            }
         }
     }
 
     closeSearch(e) {
         if ($(this.search).hasClass('active')) {
 
-            if (!$(e.target).closest($(this.search)).length) {
+            if ((!$(e.target).closest($(this.search)).length) || (e.target === this.searchClose[0]) ) {
                 $(this.search).animate({
                     left: '241px'
-                }, 400);
+                }, 300);
                 $(this.search).removeClass('active');
             }
         }
+    }
+
+    eventSetting() {
+        $(this.search).css('left', '241px');
+        $(this.search).removeClass('active');
+
+        $(this.searchSubmit).on('click', this.showSearch.bind(this));
+        $(document).on('click', this.closeSearch.bind(this));
+    }
+
+    eventCancel() {
+        $(this.search).css('left', '0');
     }
 }

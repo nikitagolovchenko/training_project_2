@@ -1,15 +1,11 @@
 .socials {
-    background-color: $white-body;
+    display: flex;
     padding: rem(15px) rem(20px);
     border-left: 1px solid $gray-cfcfcf;
     border-right: 1px solid $gray-cfcfcf;
 
     @media (max-width: $screen-sm) {
         border: 0;
-    }
-
-    &__inner {
-        display: flex;
     }
 
     &__item {
