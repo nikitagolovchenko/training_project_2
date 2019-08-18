@@ -19,8 +19,8 @@
         outline: none;
         padding: rem(2px);
         margin: 0 rem(15px);
-        background-color: $white-body;
-        border-bottom: 1px solid $gray;
+        background-color: $search-field-bg;
+        border-bottom: 1px solid $search-field-border;
        
         @media (min-width: $screen-md) {
             opacity: 0;
@@ -29,7 +29,7 @@
         }
 
         &:focus {
-            border-bottom: 1px solid $orange;
+            border-bottom: 1px solid $search-field-focus;
         }
 
     }
@@ -44,7 +44,7 @@
 
         &:hover,
         &:focus {
-            color: $orange;
+            color: $search-icon-color;
         }
     }
 

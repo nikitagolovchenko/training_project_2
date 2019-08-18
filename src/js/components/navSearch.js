@@ -1,11 +1,12 @@
 import $ from 'jquery';
 
 export default class ShowHideSearch {
-    constructor(search, searchField, searchSubmit, searchClose) {
+    constructor(search, searchField, searchSubmit, searchClose, animationSpeed) {
         this.search = search;
         this.searchField = searchField;
         this.searchSubmit = searchSubmit;
         this.searchClose = searchClose;
+        this.animationSpeed = animationSpeed;
     }
 
     showSearch(e) {   
@@ -17,7 +18,7 @@ export default class ShowHideSearch {
 
                 $(this.search).addClass('active').animate({
                     left: '0',
-                }, 300, () => {
+                }, this.animationSpeed, () => {
                     $(this.searchField).focus();
                 });
             }
@@ -30,7 +31,7 @@ export default class ShowHideSearch {
             if ((!$(e.target).closest($(this.search)).length) || (e.target === this.searchClose[0]) ) {
                 $(this.search).animate({
                     left: '241px'
-                }, 300);
+                }, this.animationSpeed);
                 $(this.search).removeClass('active');
             }
         }

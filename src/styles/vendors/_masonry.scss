@@ -16,6 +16,6 @@
     }
 
     &__item--width2 {
-        width: 48%; 
+        width: calc(50% - 30px); 
     }
 }

@@ -1,5 +1,3 @@
-'use strict';
-
 import $ from 'jquery';
 import Masonry from 'masonry-layout';
 import jQueryBridget from 'jquery-bridget';
@@ -14,8 +12,10 @@ import ShowHideSearch from 'components/navSearch';
 
 
 $(document).ready(function () {    
-    
+
     // --- variables ---
+    let animationSpeed = 300;
+
     const $search = $('#search');
     const $searchSubmit = $('#search-submit');
     const $searchField = $('#search-field');
@@ -23,10 +23,12 @@ $(document).ready(function () {
     const $nav = $('#nav');
     const $navInner = $('#nav-inner');
     const $burger = $('#burger');
+
+    // const 
     
     // component instances
-    const scrollElement = new ScrollTop('#scrollTop');
-    const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch);
+    const scrollElement = new ScrollTop('#scrollTop', animationSpeed);
+    const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
     console.log(search);
     
 
@@ -35,14 +37,14 @@ $(document).ready(function () {
         $nav.show();
         $navInner.animate({
             width: '65%'
-        }, 400);
+        }, animationSpeed);
     };
 
     // _hide nav
     function navInnerHide() {
         $navInner.animate({
             width: '0'
-        }, 400, function () {
+        }, animationSpeed, function () {
             $nav.hide();
         });
     };
@@ -96,7 +98,7 @@ $(document).ready(function () {
 
 
     const $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
-    const $worksBtn = $('#worksBtn');
+    const $worksBtn = $('#works-btn');
 
     // masonry
     let $grid = $('.grid').masonry({
@@ -107,12 +109,12 @@ $(document).ready(function () {
         
     });
     
-    // кол-во открыых картинок
+    // amount of open images
     let picturesAmount = 0;
-    // массив картинок
+    // array of pictures
     let elemArr = [];
     
-    // --- ajax request при загрузке страницы ---
+    // --- ajax request when a page is loaded ---
     let xhrLoad = $.get($requestUrl, function (data) {
 
         for(let i = 0; i < 9; i++) {
@@ -133,13 +135,13 @@ $(document).ready(function () {
         }
     });
 
-    // открытие картинки в новой вкладке
+    // opening pictures in a new tab
     xhrLoad.then(function() {
         $('.works__link').off('click', openImg).on('click', openImg);
     });
 
 
-    // --- ajax request при клике на кнопку---
+    // --- ajax request when a button is clicked ---
     $worksBtn.on('click', function () {
         let httpRec = $.get($requestUrl, function (data) {
 
@@ -161,12 +163,12 @@ $(document).ready(function () {
                     });
                     
                 } else {
-                    $($worksBtn).hide(300);
+                    $($worksBtn).hide(animationSpeed);
                 }
             }
         });
 
-        // открытие картинки в новой вкладке
+        // opening pictures in a new tab
         httpRec.then(function() {
             $('.works__link').off('click', openImg).on('click', openImg);
         })
@@ -185,7 +187,7 @@ $(document).ready(function () {
         let sort = $(this).data('sort');
 
         if(sort === 'all') {
-            // показывает скрытые картинки и очищает массив
+            // show hidden pictures and clear the array
             $(removed).each((i, val) => {
                 $(val).show();
                 $grid.masonry( 'layout');
@@ -193,7 +195,7 @@ $(document).ready(function () {
             removed.splice(0);
 
         } else {
-            // показывает скрытые картинки и очищает массив
+            // show hidden pictures and clear the array
             $(removed).each((i, val) => {
                 $(val).show();
             });
@@ -214,7 +216,7 @@ $(document).ready(function () {
     });
 
 
-    // --- открытие картинок в новой вкладке ---
+    // --- opening pictures in a new tab ---
     function openImg(event) {
         event.preventDefault;
         let attr = $(event.target).children().attr('src');

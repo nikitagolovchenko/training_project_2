@@ -1,9 +1,9 @@
 .burger {
 	display: none;
-	background-color: $orange;
+	background-color: $burger-bg;
 	padding: rem(18px) rem(14px);
 	border: 0;
-	border-radius: 3px;
+	border-radius: $burger-border-radius;
 	cursor: pointer;
 	position: relative;
 	z-index: 100;
@@ -17,7 +17,7 @@
 		display: block;
 		width: rem(30px);
 		height: 3px;
-		background-color: #fff;
+		background-color: $elements-bg;
 		position: relative;
 		z-index: 50;
 		transition: background-color 0.3s linear;
@@ -29,7 +29,7 @@
 			z-index: 100;
 			width: 100%;
 			height: 100%;
-			background-color: #fff;
+			background-color: $elements-bg;
 			transition: all 0.3s linear;
 		}
 

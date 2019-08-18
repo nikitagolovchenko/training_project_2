@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css?family=Merriweather:300&display=swap&subset=cyrillic-ext');
 
 html, body {
-    color: $gray-dark;
-    font-family: $merriweather;
-    font-size: $font-size-main;
-    font-weight: $light;
-    background-color: $white-body;
+    color: $body-color;
+    font-family: $body-font-family;
+    font-size: $body-font-size;
+    font-weight: $body-font-weight;
+    background-color: $body-bg;
 
     min-width: 320px;
 

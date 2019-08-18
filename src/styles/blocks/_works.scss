@@ -47,7 +47,7 @@
             width: 100%;
             text-align: center;
             font-size: 3em;
-            color: rgba($orange, 0.6);
+            color: rgba($works-link-color, 0.6);
             opacity: 0;
             transition: opacity 0.3s linear;
         }
@@ -68,7 +68,7 @@
         }
 
         &:hover:after {
-            background-color: rgba($gray-dark, 0.4);
+            background-color: rgba($works-link-bg, 0.4);
         }
         
         img {

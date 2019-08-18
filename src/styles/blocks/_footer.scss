@@ -14,12 +14,12 @@
         }
 
         a {
-            color: $orange;
+            color: $footer-link-color;
             border-bottom: 1px solid transparent;
             transition: border-bottom 0.3s linear;
 
             &:hover {
-                border-bottom: 1px solid $orange;
+                border-bottom: 1px solid $footer-link-border;
             }
         }
     }

@@ -6,9 +6,11 @@
 	z-index: 2000;
 
 	&-top {
-		border-bottom: 1px solid $gray-cfcfcf;
-		box-shadow: 0 rem(2px) rem(5px) $gray-cfcfcf;
-		background-color: $white-body;
+		position: relative;
+		z-index: 100;
+		border-bottom: 1px solid $h-top-border;
+		box-shadow: 0 rem(2px) rem(5px) $h-top-border;
+		background-color: $h-top-bg;
 
 		&__inner {
 			display: flex;
@@ -31,16 +33,16 @@
 		}
 
 		&__text-line {
-			color: $gray-dark;
-			font-weight: $regular;
+			color: $h-top-text-color;
+			font-weight: $h-top-text-weigth;
 
 			@media (max-width: $screen-md) {
 				padding-top: rem(10px);
 			}
 
 			span {
-				font-size: $font-size-small;
-				color: $gray;
+				font-size: $h-top-span-size;
+				color: $h-top-span-color;
 			}
 		}
 	}
@@ -48,7 +50,6 @@
 	&-bottom {
 		padding-top: rem(35px);
 		padding-bottom: rem(35px);
-		position: relative;
 		transition: background-color 0.3s linear;
 		
 		@media (max-width: $screen-lg) {
@@ -75,19 +76,27 @@
 				z-index: 50;
 				width: 100%;
 				height: 100vh;
-				background-color: rgba($gray-dark, 0.7);
+				background-color: rgba($h-bottom-nav-bg, 0.7);
 			}
 			
 			&-inner {
-				background-color: rgba($orange, 0.8);
+				background-color: rgba($h-bottom-inner-bg, 0.8);
 
 				@media (max-width: $screen-lg) {
-
 					flex-direction: column;
 					width: 0;
 					height: 100%;
+					overflow-y: auto;
 					margin-left: auto;
-					padding-top: rem(70px);
+					padding-top: rem(128px);
+				}
+
+				@media (max-width: $screen-md) {
+					padding-top: rem(156px);
+				}
+
+				@media (max-width: $screen-sm) {
+					padding-top: rem(175px);
 				}
 			}
 
@@ -108,7 +117,7 @@
 				&:after {
 					@media (max-width: $screen-lg) {
 						height: 1px;
-						background-color: $gray-e3e3e3;
+						background-color: $h-bottom-link-bg;
 						transform: scaleX(1);
 					}
 				}
@@ -116,14 +125,14 @@
 				&:hover,
 				&.active {
 					@media (max-width: $screen-lg) {
-						background-color: rgba($gray-dark, 0.8);
+						background-color: rgba($h-bottom-nav-bg, 0.8);
 					}
 				}
 			}
 		}
 
 		&.background {
-			background-color: rgba($gray-dark, 0.3);
+			background-color: rgba($h-bottom-nav-bg, 0.3);
 		}
 	}
 }

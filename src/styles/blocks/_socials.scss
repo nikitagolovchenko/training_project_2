@@ -3,8 +3,8 @@
     z-index: 5;
     display: flex;
     padding: rem(15px) rem(20px);
-    border-left: 1px solid $gray-cfcfcf;
-    border-right: 1px solid $gray-cfcfcf;
+    border-left: 1px solid $socials-border;
+    border-right: 1px solid $socials-border;
 
     @media (max-width: $screen-sm) {
         border: 0;
@@ -12,7 +12,7 @@
 
     &__item {
         padding: 0 rem(8px);
-        border-left: 1px solid $gray-e3e3e3;
+        border-left: 1px solid $socials-item-border;
 
         &:first-child {
             border-left: none;
@@ -20,11 +20,11 @@
     }
 
     &__link {
-        color: $gray;
+        color: $socials-link;
         transition: color 0.3s linear;
 
         &:hover {
-            color: $orange;
+            color: $socials-link-hover;
         }
     }
 

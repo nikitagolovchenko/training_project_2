@@ -11,7 +11,7 @@
 .wrapper {
     padding: 0;
     height: 100vh;
-    background-color: lighten($gray-dark, 25%);
+    background-color: lighten($picture-bg, 25%);
     
 }
 
@@ -30,7 +30,6 @@
         align-items: center;
         width: 100vw;
         height:  100vh;
-        margin: 0 auto;
         padding: 15px;     
         background-repeat: no-repeat;
         background-size: cover;
@@ -42,9 +41,9 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;;
+            height: 100%;
             z-index: 1;
-            background: rgba($gray-dark, 0.9);
+            background: rgba($picture-bg, 0.9);
         }
     }
 }

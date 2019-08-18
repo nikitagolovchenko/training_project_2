@@ -15291,13 +15291,14 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ShowHideSearch =
 /*#__PURE__*/
 function () {
-  function ShowHideSearch(search, searchField, searchSubmit, searchClose) {
+  function ShowHideSearch(search, searchField, searchSubmit, searchClose, animationSpeed) {
     _classCallCheck(this, ShowHideSearch);
 
     this.search = search;
     this.searchField = searchField;
     this.searchSubmit = searchSubmit;
     this.searchClose = searchClose;
+    this.animationSpeed = animationSpeed;
   }
 
   _createClass(ShowHideSearch, [{
@@ -15312,7 +15313,7 @@ function () {
         if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).addClass('active').animate({
             left: '0'
-          }, 300, function () {
+          }, this.animationSpeed, function () {
             jquery__WEBPACK_IMPORTED_MODULE_4___default()(_this.searchField).focus();
           });
         }
@@ -15325,7 +15326,7 @@ function () {
         if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(e.target).closest(jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search)).length || e.target === this.searchClose[0]) {
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).animate({
             left: '241px'
-          }, 300);
+          }, this.animationSpeed);
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
         }
       }
@@ -15382,10 +15383,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ScrollTop =
 /*#__PURE__*/
 function () {
-  function ScrollTop(element) {
+  function ScrollTop(element, animationSpeed) {
     _classCallCheck(this, ScrollTop);
 
     this.element = element;
+    this.animationSpeed = animationSpeed;
     jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', this.showHideElement.bind(this));
     jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).on('click', this.scrollTopAnimate);
   }
@@ -15393,15 +15395,15 @@ function () {
   _createClass(ScrollTop, [{
     key: "showHideElement",
     value: function showHideElement() {
-      // высота окна браузера
-      var windowHeight = jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).height(); // значение скролла
+      // browser window height
+      var windowHeight = jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).height(); // scroll value
 
       var scrollTop = jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).scrollTop();
 
       if (scrollTop >= windowHeight) {
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).show(500);
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).show(this.animationSpeed);
       } else {
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).hide(500);
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).hide(this.animationSpeed);
       }
     }
   }, {
@@ -15409,7 +15411,7 @@ function () {
     value: function scrollTopAnimate() {
       jquery__WEBPACK_IMPORTED_MODULE_2___default()('html').animate({
         scrollTop: '0'
-      }, 500);
+      }, this.animationSpeed);
     }
   }]);
 
@@ -15446,8 +15448,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
 jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_2___default.a, jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
 imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // components:
 
@@ -15455,23 +15455,25 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEB
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   // --- variables ---
+  var animationSpeed = 300;
   var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
   var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-submit');
   var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-field');
   var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#close-search');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
   var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav-inner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // component instances
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // const 
+  // component instances
 
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop');
-  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]($search, $searchField, $searchSubmit, $closeSearch);
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop', animationSpeed);
+  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
   console.log(search); // _show nav
 
   function navInnerShow() {
     $nav.show();
     $navInner.animate({
       width: '65%'
-    }, 400);
+    }, animationSpeed);
   }
 
   ; // _hide nav
@@ -15479,7 +15481,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   function navInnerHide() {
     $navInner.animate({
       width: '0'
-    }, 400, function () {
+    }, animationSpeed, function () {
       $nav.hide();
     });
   }
@@ -15522,17 +15524,17 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // =====================================================
 
   var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
-  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#worksBtn'); // masonry
+  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#works-btn'); // masonry
 
   var $grid = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').masonry({
     itemSelector: '.grid__item',
     columnWidth: '.grid__sizer',
     percentPosition: true
-  }); // кол-во открыых картинок
+  }); // amount of open images
 
-  var picturesAmount = 0; // массив картинок
+  var picturesAmount = 0; // array of pictures
 
-  var elemArr = []; // --- ajax request при загрузке страницы ---
+  var elemArr = []; // --- ajax request when a page is loaded ---
 
   var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
     for (var i = 0; i < 9; i++) {
@@ -15548,11 +15550,11 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
         $grid.masonry('layout');
       });
     }
-  }); // открытие картинки в новой вкладке
+  }); // opening pictures in a new tab
 
   xhrLoad.then(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
-  }); // --- ajax request при клике на кнопку---
+  }); // --- ajax request when a button is clicked ---
 
   $worksBtn.on('click', function () {
     var httpRec = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
@@ -15570,10 +15572,10 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
             $grid.masonry('layout');
           });
         } else {
-          jquery__WEBPACK_IMPORTED_MODULE_1___default()($worksBtn).hide(300);
+          jquery__WEBPACK_IMPORTED_MODULE_1___default()($worksBtn).hide(animationSpeed);
         }
       }
-    }); // открытие картинки в новой вкладке
+    }); // opening pictures in a new tab
 
     httpRec.then(function () {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
@@ -15588,14 +15590,14 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     var sort = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('sort');
 
     if (sort === 'all') {
-      // показывает скрытые картинки и очищает массив
+      // show hidden pictures and clear the array
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
         $grid.masonry('layout');
       });
       removed.splice(0);
     } else {
-      // показывает скрытые картинки и очищает массив
+      // show hidden pictures and clear the array
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
         jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
       });
@@ -15608,7 +15610,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
         }
       });
     }
-  }); // --- открытие картинок в новой вкладке ---
+  }); // --- opening pictures in a new tab ---
 
   function openImg(event) {
     event.preventDefault;

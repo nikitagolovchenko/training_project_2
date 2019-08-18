@@ -10,7 +10,7 @@
     
     &__link {
         padding: rem(10px) 0;
-        color: $white;
+        color: $nav-link-color;
         text-transform: uppercase;
         position:  relative;
         
@@ -21,7 +21,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background-color: $white;
+            background-color: $nav-link-bg;
             transform: scaleX(0);
             transition: transform 0.3s linear;
         }
@@ -35,7 +35,7 @@
     &--without-bg {
         
         .nav__link {
-            color: $gray;
+            color: $nav-bg-link-color;
             transition: color 0.3s linear;
 
             &:after {
@@ -43,7 +43,7 @@
             }
             
             &:hover {
-                color: $gray-dark;
+                color: $nav-bg-link-hover;
             }
         }
     }

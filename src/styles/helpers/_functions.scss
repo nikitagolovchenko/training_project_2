@@ -1,4 +1,4 @@
-$browser-context: $font-size-main;
+$browser-context: $font-size-base;
 
 @function rem($pixels, $context: $browser-context) {
     @if (unitless($pixels)) {

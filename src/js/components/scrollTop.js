@@ -1,30 +1,31 @@
 import $ from 'jquery';
 
 export default class ScrollTop {
-    constructor(element) {
+    constructor(element, animationSpeed) {
         this.element = element;
+        this.animationSpeed = animationSpeed;
 
         $(document).on('scroll', this.showHideElement.bind(this));
         $(this.element).on('click', this.scrollTopAnimate);
     }
 
     showHideElement() {
-        // высота окна браузера
+        // browser window height
         let windowHeight = $(window).height();
-        // значение скролла
+        // scroll value
         let scrollTop = $(document).scrollTop();
 
         if (scrollTop >= windowHeight) {
-            $(this.element).show(500);
+            $(this.element).show(this.animationSpeed);
 
         } else {
-            $(this.element).hide(500);
+            $(this.element).hide(this.animationSpeed);
         }
     }
 
     scrollTopAnimate() {
         $('html').animate({
             scrollTop: '0'
-        }, 500);
+        }, this.animationSpeed);
     }
 }
