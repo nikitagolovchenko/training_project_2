@@ -5,7 +5,6 @@ export default class ScrollTop {
         this.element = element;
         this.animationSpeed = animationSpeed;
 
-        $(document).on('scroll', this.showHideElement.bind(this));
         $(this.element).on('click', this.scrollTopAnimate);
     }
 

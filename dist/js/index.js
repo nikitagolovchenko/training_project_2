@@ -15547,6 +15547,57 @@ module.exports = g;
 
 /***/ }),
 
+/***/ "./src/js/components/addBgWhenScroll.js":
+/*!**********************************************!*\
+  !*** ./src/js/components/addBgWhenScroll.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return addBgWhenScroll; });
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.define-property */ "./node_modules/core-js/modules/es.object.define-property.js");
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
+
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+
+
+var addBgWhenScroll =
+/*#__PURE__*/
+function () {
+  function addBgWhenScroll(element) {
+    _classCallCheck(this, addBgWhenScroll);
+
+    this.element = element;
+  }
+
+  _createClass(addBgWhenScroll, [{
+    key: "addRemoveBg",
+    value: function addRemoveBg() {
+      if (jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).scrollTop() > this.element.innerHeight()) {
+        jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.element).addClass('background');
+      } else {
+        jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.element).removeClass('background');
+      }
+    }
+  }]);
+
+  return addBgWhenScroll;
+}();
+
+
+
+/***/ }),
+
 /***/ "./src/js/components/navSearch.js":
 /*!****************************************!*\
   !*** ./src/js/components/navSearch.js ***!
@@ -15661,13 +15712,10 @@ function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ScrollTop; });
-/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.function.bind */ "./node_modules/core-js/modules/es.function.bind.js");
-/* harmony import */ var core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_function_bind__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.object.define-property */ "./node_modules/core-js/modules/es.object.define-property.js");
-/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
-
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.object.define-property */ "./node_modules/core-js/modules/es.object.define-property.js");
+/* harmony import */ var core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_object_define_property__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -15686,28 +15734,27 @@ function () {
 
     this.element = element;
     this.animationSpeed = animationSpeed;
-    jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', this.showHideElement.bind(this));
-    jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).on('click', this.scrollTopAnimate);
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.element).on('click', this.scrollTopAnimate);
   }
 
   _createClass(ScrollTop, [{
     key: "showHideElement",
     value: function showHideElement() {
       // browser window height
-      var windowHeight = jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).height(); // scroll value
+      var windowHeight = jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).height(); // scroll value
 
-      var scrollTop = jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).scrollTop();
+      var scrollTop = jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).scrollTop();
 
       if (scrollTop >= windowHeight) {
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).show(this.animationSpeed);
+        jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.element).show(this.animationSpeed);
       } else {
-        jquery__WEBPACK_IMPORTED_MODULE_2___default()(this.element).hide(this.animationSpeed);
+        jquery__WEBPACK_IMPORTED_MODULE_1___default()(this.element).hide(this.animationSpeed);
       }
     }
   }, {
     key: "scrollTopAnimate",
     value: function scrollTopAnimate() {
-      jquery__WEBPACK_IMPORTED_MODULE_2___default()('html').animate({
+      jquery__WEBPACK_IMPORTED_MODULE_1___default()('html').animate({
         scrollTop: '0'
       }, this.animationSpeed);
     }
@@ -15743,6 +15790,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
 /* harmony import */ var components_navSearch__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! components/navSearch */ "./src/js/components/navSearch.js");
+/* harmony import */ var _components_addBgWhenScroll__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/addBgWhenScroll */ "./src/js/components/addBgWhenScroll.js");
 
 
 
@@ -15751,6 +15799,7 @@ __webpack_require__.r(__webpack_exports__);
 
 jquery_bridget__WEBPACK_IMPORTED_MODULE_4___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_3___default.a, jquery__WEBPACK_IMPORTED_MODULE_2___default.a);
 imagesloaded__WEBPACK_IMPORTED_MODULE_5___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_2___default.a); // components:
+
 
 
 
@@ -15770,9 +15819,34 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
   var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
   var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#works-btn'); // component instances
 
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_6__["default"]($scrollTop, animationSpeed);
+  var scrollTopButton = new components_scrollTop__WEBPACK_IMPORTED_MODULE_6__["default"]($scrollTop, animationSpeed);
   var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_7__["default"]($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
-  console.log(search); // _show nav
+  var headerScrollBg = new _components_addBgWhenScroll__WEBPACK_IMPORTED_MODULE_8__["default"]($headerBottom); // --- resize handler ---
+
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).on('load resize orientationchange', function () {
+    $burger.removeClass('active');
+    $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
+
+    if (this.innerWidth > 992) {
+      $nav.show();
+      $navInner.css('width', '100%');
+    } else {
+      $nav.hide();
+      $navInner.css('width', '0');
+    }
+
+    if (this.innerWidth > 768) {
+      search.eventSetting();
+    } else {
+      search.eventCancel();
+    }
+  }); // --- document scroll event ----
+
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', function () {
+    scrollTopButton.showHideElement();
+    headerScrollBg.addRemoveBg();
+  }); // ======== functions ========
+  // _show nav
 
   function navInnerShow() {
     $nav.show();
@@ -15806,27 +15880,7 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
     });
   }
 
-  ; // --- trigger events ---
-
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).on('load resize orientationchange', function () {
-    // resizing errors correction
-    $burger.removeClass('active');
-    $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
-
-    if (this.innerWidth > 992) {
-      $nav.show();
-      $navInner.css('width', '100%');
-    } else {
-      $nav.hide();
-      $navInner.css('width', '0');
-    }
-
-    if (this.innerWidth > 768) {
-      search.eventSetting();
-    } else {
-      search.eventCancel();
-    }
-  }); // =====================================================
+  ; // =====================================================
   // masonry
 
   var $grid = jquery__WEBPACK_IMPORTED_MODULE_2___default()('.grid').masonry({
@@ -15935,27 +15989,20 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_2___default()('#picture').attr('src', link);
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // background header when scrolling
-
-  jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', function () {
-    if (jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).scrollTop() > $headerBottom.innerHeight()) {
-      jquery__WEBPACK_IMPORTED_MODULE_2___default()($headerBottom).addClass('background');
-    } else {
-      jquery__WEBPACK_IMPORTED_MODULE_2___default()($headerBottom).removeClass('background');
-    }
-  });
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")"));
 });
 
 /***/ }),
 
 /***/ 0:
-/*!*************************************************************************************************!*\
-  !*** multi ./src/js/index.js ./src/js/components/navSearch.js ./src/js/components/scrollTop.js ***!
-  \*************************************************************************************************/
+/*!****************************************************************************************************************************************!*\
+  !*** multi ./src/js/index.js ./src/js/components/addBgWhenScroll.js ./src/js/components/navSearch.js ./src/js/components/scrollTop.js ***!
+  \****************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\index.js */"./src/js/index.js");
+__webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\addBgWhenScroll.js */"./src/js/components/addBgWhenScroll.js");
 __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\navSearch.js */"./src/js/components/navSearch.js");
 module.exports = __webpack_require__(/*! C:\Users\Sunburst\Desktop\Программирование\1 КУРСЫ ITCloud\javascript\проект 2\training_project_2\src\js\components\scrollTop.js */"./src/js/components/scrollTop.js");
 

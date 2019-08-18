@@ -9,6 +9,7 @@ imagesLoaded.makeJQueryPlugin( $ );
 // components:
 import ScrollTop from 'components/scrollTop';
 import ShowHideSearch from 'components/navSearch';
+import addBgWhenScroll from './components/addBgWhenScroll';
 
 
 $(document).ready(function () {    
@@ -32,10 +33,46 @@ $(document).ready(function () {
 
     
     // component instances
-    const scrollElement = new ScrollTop($scrollTop, animationSpeed);
+    const scrollTopButton = new ScrollTop($scrollTop, animationSpeed);
     const search = new ShowHideSearch($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
-    console.log(search);
+    const headerScrollBg = new addBgWhenScroll($headerBottom);
+
+
+    // --- resize handler ---
+    $(window).on('load resize orientationchange', function () {
+
+        $burger.removeClass('active');
+        $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
+
+        if (this.innerWidth > 992) {
+            $nav.show();
+            $navInner.css('width', '100%');
+            
+        } else {
+            $nav.hide();
+            $navInner.css('width', '0');
+        }
+        
+        
+        if (this.innerWidth > 768) {
+            search.eventSetting();
+            
+        } else {
+            search.eventCancel();
+        }
+
+    });
     
+
+    // --- document scroll event ----
+    $(document).on('scroll', function() {
+        scrollTopButton.showHideElement();
+
+        headerScrollBg.addRemoveBg();
+    });
+
+
+    // ======== functions ========
 
     // _show nav
     function navInnerShow() {
@@ -69,34 +106,6 @@ $(document).ready(function () {
             }
         })
     };
-
-    // --- trigger events ---
-
-    $(window).on('load resize orientationchange', function () {
-        // resizing errors correction
-        $burger.removeClass('active');
-        
-        $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
-
-
-        if (this.innerWidth > 992) {
-            $nav.show();
-            $navInner.css('width', '100%');
-            
-        } else {
-            $nav.hide();
-            $navInner.css('width', '0');
-        }
-        
-        
-        if (this.innerWidth > 768) {
-            search.eventSetting();
-            
-        } else {
-            search.eventCancel();
-        }
-
-    });
 
 
 
@@ -191,6 +200,7 @@ $(document).ready(function () {
         });
     });
 
+
     // =========================================
 
     // --- ФИЛЬТР КАРТИНОК ---
@@ -249,17 +259,6 @@ $(document).ready(function () {
 
     $('#picture').attr('src', link);
     $('#pictureWrap').css('backgroundImage', `url(${link})`);
-
-    
-
-    // background header when scrolling
-    $(document).on('scroll', function() {
-        if($(document).scrollTop() > $headerBottom.innerHeight()) {
-            $($headerBottom).addClass('background');
-        } else {
-            $($headerBottom).removeClass('background');
-        }
-    });
 
 });
 
