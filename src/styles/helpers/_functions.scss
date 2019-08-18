@@ -9,7 +9,7 @@ $browser-context: $font-size-main;
         $context: $context * 1px;
     }
 
-    @return $pixels / $context * 1em;
+    @return $pixels / $context * 1rem;
 }
 
 /*

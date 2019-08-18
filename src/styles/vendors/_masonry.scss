@@ -1,17 +1,21 @@
-.grid__sizer,
-.grid__item {
-    width: 31.33333%;
-    margin: 1%;
+.grid {
+    margin: 0 -15px;
 
-    @media (max-width: $screen-md) {
-            width: 48%;
+    &__sizer,
+    &__item {
+        width: calc((100% / 3) - 30px);
+        margin: rem(15px);
+
+        @media (max-width: $screen-md) {
+            width: calc(50% - 30px);
+        }
+
+        @media (max-width: $screen-sm) {
+            width: calc(100% - 30px);
+        }
     }
 
-    @media (max-width: $screen-sm) {
-            width: 98%;
+    &__item--width2 {
+        width: 48%; 
     }
-}
-
-.grid__item--width2 { 
-    width: 48%; 
 }
