@@ -15,25 +15,25 @@ $(document).ready(function () {
 
     // --- variables ---
     let animationSpeed = 300;
-
+    
     const $search = $('#search');
+    const $searchForm = $('#search-form');
     const $searchSubmit = $('#search-submit');
     const $searchField = $('#search-field');
     const $closeSearch = $('#close-search');
     const $nav = $('#nav');
     const $navInner = $('#nav-inner');
     const $burger = $('#burger');
-    
+    const $headerBottom = $('.header-bottom');
     const $scrollTop = $('#scrollTop');
 
     const $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
     const $worksBtn = $('#works-btn');
 
-
     
     // component instances
     const scrollElement = new ScrollTop($scrollTop, animationSpeed);
-    const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
+    const search = new ShowHideSearch($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
     console.log(search);
     
 
@@ -134,7 +134,7 @@ $(document).ready(function () {
         for(let i = 0; i < picturesUpload; i++) {
             picturesAmount++;
 
-            const link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+            const link = $(`<a class="works__link icon-search" href="picture.html" target="_blank"></a>`);
             $(link).append(`<img src=${data[i].url} alt="" />`);
 
             const gridItem = $(`<div class="grid__item works__item" data-type=${data[i].type}></div>`).append(link);
@@ -165,7 +165,7 @@ $(document).ready(function () {
                 if(picturesAmount < data.length) {
                     picturesAmount++;
                     
-                    const link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+                    const link = $(`<a class="works__link icon-search" href="picture.html" target="_blank"></a>`);
                     $(link).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
 
                     const gridItem = $(`<div class="grid__item works__item" data-type=${data[picturesAmount - 1].type}></div>`).append(link);
@@ -235,13 +235,12 @@ $(document).ready(function () {
 
     // --- opening pictures in a new tab ---
     function openImg(event) {
-        event.preventDefault;
-        let attr = $(event.target).children().attr('src');
-        console.log($(event.target).children().attr('src'));
+        let attr = $(event.target).find('img').attr('src');
+        console.log($(event.target).find('img').attr('src'));
 
         sessionStorage.setItem('link', attr);    
 
-        window.open('picture.html', '_blank');
+        // window.open('picture.html', '_blank');
     };
 
     
@@ -254,7 +253,6 @@ $(document).ready(function () {
     
 
     // background header when scrolling
-    let $headerBottom = $('.header-bottom');
     $(document).on('scroll', function() {
         if($(document).scrollTop() > $headerBottom.innerHeight()) {
             $($headerBottom).addClass('background');

@@ -1,12 +1,17 @@
 import $ from 'jquery';
 
 export default class ShowHideSearch {
-    constructor(search, searchField, searchSubmit, searchClose, animationSpeed) {
+    constructor(search, searchForm, searchField, searchSubmit, searchClose, animationSpeed) {
         this.search = search;
+        this.searchForm = searchForm;
         this.searchField = searchField;
         this.searchSubmit = searchSubmit;
         this.searchClose = searchClose;
         this.animationSpeed = animationSpeed;
+    }
+    
+    get hideWidth() {
+        return $(this.searchForm).width();
     }
 
     showSearch(e) {   
@@ -30,7 +35,7 @@ export default class ShowHideSearch {
 
             if ((!$(e.target).closest($(this.search)).length) || (e.target === this.searchClose[0]) ) {
                 $(this.search).animate({
-                    left: '241px'
+                    left: this.hideWidth
                 }, this.animationSpeed);
                 $(this.search).removeClass('active');
             }
@@ -38,7 +43,7 @@ export default class ShowHideSearch {
     }
 
     eventSetting() {
-        $(this.search).css('left', '241px');
+        $(this.search).css('left', this.hideWidth);
         $(this.search).removeClass('active');
 
         $(this.searchSubmit).on('click', this.showSearch.bind(this));

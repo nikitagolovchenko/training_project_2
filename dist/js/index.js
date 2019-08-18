@@ -102,6 +102,34 @@ module.exports = function (it) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/add-to-unscopables.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/internals/add-to-unscopables.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var wellKnownSymbol = __webpack_require__(/*! ../internals/well-known-symbol */ "./node_modules/core-js/internals/well-known-symbol.js");
+var create = __webpack_require__(/*! ../internals/object-create */ "./node_modules/core-js/internals/object-create.js");
+var hide = __webpack_require__(/*! ../internals/hide */ "./node_modules/core-js/internals/hide.js");
+
+var UNSCOPABLES = wellKnownSymbol('unscopables');
+var ArrayPrototype = Array.prototype;
+
+// Array.prototype[@@unscopables]
+// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+if (ArrayPrototype[UNSCOPABLES] == undefined) {
+  hide(ArrayPrototype, UNSCOPABLES, create(null));
+}
+
+// add a key to Array.prototype[@@unscopables]
+module.exports = function (key) {
+  ArrayPrototype[UNSCOPABLES][key] = true;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/an-object.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/internals/an-object.js ***!
@@ -163,6 +191,82 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/array-iteration.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/internals/array-iteration.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var bind = __webpack_require__(/*! ../internals/bind-context */ "./node_modules/core-js/internals/bind-context.js");
+var IndexedObject = __webpack_require__(/*! ../internals/indexed-object */ "./node_modules/core-js/internals/indexed-object.js");
+var toObject = __webpack_require__(/*! ../internals/to-object */ "./node_modules/core-js/internals/to-object.js");
+var toLength = __webpack_require__(/*! ../internals/to-length */ "./node_modules/core-js/internals/to-length.js");
+var arraySpeciesCreate = __webpack_require__(/*! ../internals/array-species-create */ "./node_modules/core-js/internals/array-species-create.js");
+
+var push = [].push;
+
+// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
+var createMethod = function (TYPE) {
+  var IS_MAP = TYPE == 1;
+  var IS_FILTER = TYPE == 2;
+  var IS_SOME = TYPE == 3;
+  var IS_EVERY = TYPE == 4;
+  var IS_FIND_INDEX = TYPE == 6;
+  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+  return function ($this, callbackfn, that, specificCreate) {
+    var O = toObject($this);
+    var self = IndexedObject(O);
+    var boundFunction = bind(callbackfn, that, 3);
+    var length = toLength(self.length);
+    var index = 0;
+    var create = specificCreate || arraySpeciesCreate;
+    var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+    var value, result;
+    for (;length > index; index++) if (NO_HOLES || index in self) {
+      value = self[index];
+      result = boundFunction(value, index, O);
+      if (TYPE) {
+        if (IS_MAP) target[index] = result; // map
+        else if (result) switch (TYPE) {
+          case 3: return true;              // some
+          case 5: return value;             // find
+          case 6: return index;             // findIndex
+          case 2: push.call(target, value); // filter
+        } else if (IS_EVERY) return false;  // every
+      }
+    }
+    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  forEach: createMethod(0),
+  // `Array.prototype.map` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.map
+  map: createMethod(1),
+  // `Array.prototype.filter` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.filter
+  filter: createMethod(2),
+  // `Array.prototype.some` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.some
+  some: createMethod(3),
+  // `Array.prototype.every` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.every
+  every: createMethod(4),
+  // `Array.prototype.find` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.find
+  find: createMethod(5),
+  // `Array.prototype.findIndex` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
+  findIndex: createMethod(6)
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/array-method-has-species-support.js":
 /*!****************************************************************************!*\
   !*** ./node_modules/core-js/internals/array-method-has-species-support.js ***!
@@ -215,6 +319,41 @@ module.exports = function (originalArray, length) {
       if (C === null) C = undefined;
     }
   } return new (C === undefined ? Array : C)(length === 0 ? 0 : length);
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/bind-context.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/internals/bind-context.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var aFunction = __webpack_require__(/*! ../internals/a-function */ "./node_modules/core-js/internals/a-function.js");
+
+// optional / simple context binding
+module.exports = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 0: return function () {
+      return fn.call(that);
+    };
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
 };
 
 
@@ -699,6 +838,20 @@ module.exports = DESCRIPTORS ? function (object, key, value) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/html.js":
+/*!************************************************!*\
+  !*** ./node_modules/core-js/internals/html.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var getBuiltIn = __webpack_require__(/*! ../internals/get-built-in */ "./node_modules/core-js/internals/get-built-in.js");
+
+module.exports = getBuiltIn('document', 'documentElement');
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/ie8-dom-define.js":
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/internals/ie8-dom-define.js ***!
@@ -927,6 +1080,93 @@ module.exports = typeof WeakMap === 'function' && /native code/.test(nativeFunct
 
 /***/ }),
 
+/***/ "./node_modules/core-js/internals/object-create.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/internals/object-create.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
+var defineProperties = __webpack_require__(/*! ../internals/object-define-properties */ "./node_modules/core-js/internals/object-define-properties.js");
+var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ "./node_modules/core-js/internals/enum-bug-keys.js");
+var hiddenKeys = __webpack_require__(/*! ../internals/hidden-keys */ "./node_modules/core-js/internals/hidden-keys.js");
+var html = __webpack_require__(/*! ../internals/html */ "./node_modules/core-js/internals/html.js");
+var documentCreateElement = __webpack_require__(/*! ../internals/document-create-element */ "./node_modules/core-js/internals/document-create-element.js");
+var sharedKey = __webpack_require__(/*! ../internals/shared-key */ "./node_modules/core-js/internals/shared-key.js");
+var IE_PROTO = sharedKey('IE_PROTO');
+
+var PROTOTYPE = 'prototype';
+var Empty = function () { /* empty */ };
+
+// Create object with fake `null` prototype: use iframe Object with cleared prototype
+var createDict = function () {
+  // Thrash, waste and sodomy: IE GC bug
+  var iframe = documentCreateElement('iframe');
+  var length = enumBugKeys.length;
+  var lt = '<';
+  var script = 'script';
+  var gt = '>';
+  var js = 'java' + script + ':';
+  var iframeDocument;
+  iframe.style.display = 'none';
+  html.appendChild(iframe);
+  iframe.src = String(js);
+  iframeDocument = iframe.contentWindow.document;
+  iframeDocument.open();
+  iframeDocument.write(lt + script + gt + 'document.F=Object' + lt + '/' + script + gt);
+  iframeDocument.close();
+  createDict = iframeDocument.F;
+  while (length--) delete createDict[PROTOTYPE][enumBugKeys[length]];
+  return createDict();
+};
+
+// `Object.create` method
+// https://tc39.github.io/ecma262/#sec-object.create
+module.exports = Object.create || function create(O, Properties) {
+  var result;
+  if (O !== null) {
+    Empty[PROTOTYPE] = anObject(O);
+    result = new Empty();
+    Empty[PROTOTYPE] = null;
+    // add "__proto__" for Object.getPrototypeOf polyfill
+    result[IE_PROTO] = O;
+  } else result = createDict();
+  return Properties === undefined ? result : defineProperties(result, Properties);
+};
+
+hiddenKeys[IE_PROTO] = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/object-define-properties.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/core-js/internals/object-define-properties.js ***!
+  \********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var DESCRIPTORS = __webpack_require__(/*! ../internals/descriptors */ "./node_modules/core-js/internals/descriptors.js");
+var definePropertyModule = __webpack_require__(/*! ../internals/object-define-property */ "./node_modules/core-js/internals/object-define-property.js");
+var anObject = __webpack_require__(/*! ../internals/an-object */ "./node_modules/core-js/internals/an-object.js");
+var objectKeys = __webpack_require__(/*! ../internals/object-keys */ "./node_modules/core-js/internals/object-keys.js");
+
+// `Object.defineProperties` method
+// https://tc39.github.io/ecma262/#sec-object.defineproperties
+module.exports = DESCRIPTORS ? Object.defineProperties : function defineProperties(O, Properties) {
+  anObject(O);
+  var keys = objectKeys(Properties);
+  var length = keys.length;
+  var index = 0;
+  var key;
+  while (length > index) definePropertyModule.f(O, key = keys[index++], Properties[key]);
+  return O;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/internals/object-define-property.js":
 /*!******************************************************************!*\
   !*** ./node_modules/core-js/internals/object-define-property.js ***!
@@ -1045,6 +1285,25 @@ module.exports = function (object, names) {
     ~indexOf(result, key) || result.push(key);
   }
   return result;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/internals/object-keys.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/core-js/internals/object-keys.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var internalObjectKeys = __webpack_require__(/*! ../internals/object-keys-internal */ "./node_modules/core-js/internals/object-keys-internal.js");
+var enumBugKeys = __webpack_require__(/*! ../internals/enum-bug-keys */ "./node_modules/core-js/internals/enum-bug-keys.js");
+
+// `Object.keys` method
+// https://tc39.github.io/ecma262/#sec-object.keys
+module.exports = Object.keys || function keys(O) {
+  return internalObjectKeys(O, enumBugKeys);
 };
 
 
@@ -1544,6 +1803,39 @@ module.exports = function (name) {
   return store[name] || (store[name] = NATIVE_SYMBOL && Symbol[name]
     || (NATIVE_SYMBOL ? Symbol : uid)('Symbol.' + name));
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es.array.find.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.find.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $ = __webpack_require__(/*! ../internals/export */ "./node_modules/core-js/internals/export.js");
+var $find = __webpack_require__(/*! ../internals/array-iteration */ "./node_modules/core-js/internals/array-iteration.js").find;
+var addToUnscopables = __webpack_require__(/*! ../internals/add-to-unscopables */ "./node_modules/core-js/internals/add-to-unscopables.js");
+
+var FIND = 'find';
+var SKIPS_HOLES = true;
+
+// Shouldn't skip holes
+if (FIND in []) Array(1)[FIND](function () { SKIPS_HOLES = false; });
+
+// `Array.prototype.find` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.find
+$({ target: 'Array', proto: true, forced: SKIPS_HOLES }, {
+  find: function find(callbackfn /* , that = undefined */) {
+    return $find(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+  }
+});
+
+// https://tc39.github.io/ecma262/#sec-array.prototype-@@unscopables
+addToUnscopables(FIND);
 
 
 /***/ }),
@@ -15291,10 +15583,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ShowHideSearch =
 /*#__PURE__*/
 function () {
-  function ShowHideSearch(search, searchField, searchSubmit, searchClose, animationSpeed) {
+  function ShowHideSearch(search, searchForm, searchField, searchSubmit, searchClose, animationSpeed) {
     _classCallCheck(this, ShowHideSearch);
 
     this.search = search;
+    this.searchForm = searchForm;
     this.searchField = searchField;
     this.searchSubmit = searchSubmit;
     this.searchClose = searchClose;
@@ -15325,7 +15618,7 @@ function () {
       if (jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
         if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(e.target).closest(jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search)).length || e.target === this.searchClose[0]) {
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).animate({
-            left: '241px'
+            left: this.hideWidth
           }, this.animationSpeed);
           jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
         }
@@ -15334,7 +15627,7 @@ function () {
   }, {
     key: "eventSetting",
     value: function eventSetting() {
-      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).css('left', '241px');
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).css('left', this.hideWidth);
       jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).removeClass('active');
       jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchSubmit).on('click', this.showSearch.bind(this));
       jquery__WEBPACK_IMPORTED_MODULE_4___default()(document).on('click', this.closeSearch.bind(this));
@@ -15343,6 +15636,11 @@ function () {
     key: "eventCancel",
     value: function eventCancel() {
       jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).css('left', '0');
+    }
+  }, {
+    key: "hideWidth",
+    get: function get() {
+      return jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchForm).width();
     }
   }]);
 
@@ -15431,44 +15729,49 @@ function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.splice */ "./node_modules/core-js/modules/es.array.splice.js");
-/* harmony import */ var core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var masonry_layout__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! masonry-layout */ "./node_modules/masonry-layout/masonry.js");
-/* harmony import */ var masonry_layout__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(masonry_layout__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var jquery_bridget__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! jquery-bridget */ "./node_modules/jquery-bridget/jquery-bridget.js");
-/* harmony import */ var jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(jquery_bridget__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-/* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
-/* harmony import */ var components_navSearch__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! components/navSearch */ "./src/js/components/navSearch.js");
+/* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.array.find */ "./node_modules/core-js/modules/es.array.find.js");
+/* harmony import */ var core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_find__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.array.splice */ "./node_modules/core-js/modules/es.array.splice.js");
+/* harmony import */ var core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_array_splice__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var masonry_layout__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! masonry-layout */ "./node_modules/masonry-layout/masonry.js");
+/* harmony import */ var masonry_layout__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(masonry_layout__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var jquery_bridget__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! jquery-bridget */ "./node_modules/jquery-bridget/jquery-bridget.js");
+/* harmony import */ var jquery_bridget__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(jquery_bridget__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+/* harmony import */ var imagesloaded__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(imagesloaded__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var components_scrollTop__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! components/scrollTop */ "./src/js/components/scrollTop.js");
+/* harmony import */ var components_navSearch__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! components/navSearch */ "./src/js/components/navSearch.js");
 
 
 
 
 
-jquery_bridget__WEBPACK_IMPORTED_MODULE_3___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_2___default.a, jquery__WEBPACK_IMPORTED_MODULE_1___default.a);
-imagesloaded__WEBPACK_IMPORTED_MODULE_4___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_1___default.a); // components:
+
+jquery_bridget__WEBPACK_IMPORTED_MODULE_4___default()('masonry', masonry_layout__WEBPACK_IMPORTED_MODULE_3___default.a, jquery__WEBPACK_IMPORTED_MODULE_2___default.a);
+imagesloaded__WEBPACK_IMPORTED_MODULE_5___default.a.makeJQueryPlugin(jquery__WEBPACK_IMPORTED_MODULE_2___default.a); // components:
 
 
 
-jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
+jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
   // --- variables ---
   var animationSpeed = 300;
-  var $search = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search');
-  var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-submit');
-  var $searchField = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#search-field');
-  var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#close-search');
-  var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
-  var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav-inner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger');
-  var $scrollTop = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#scrollTop');
+  var $search = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search');
+  var $searchForm = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-form');
+  var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-submit');
+  var $searchField = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-field');
+  var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#close-search');
+  var $nav = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#nav');
+  var $navInner = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#nav-inner');
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#burger');
+  var $headerBottom = jquery__WEBPACK_IMPORTED_MODULE_2___default()('.header-bottom');
+  var $scrollTop = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#scrollTop');
   var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
-  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#works-btn'); // component instances
+  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#works-btn'); // component instances
 
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]($scrollTop, animationSpeed);
-  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_6__["default"]($scrollTop, animationSpeed);
+  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_7__["default"]($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
   console.log(search); // _show nav
 
   function navInnerShow() {
@@ -15491,11 +15794,11 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   ; // _toggle Nav Burger
 
   function toggleNavBurger() {
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).toggleClass('active');
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).hasClass('active') ? navInnerShow() : navInnerHide();
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', function (e) {
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).toggleClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).hasClass('active') ? navInnerShow() : navInnerHide();
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('click', function (e) {
       if ($burger.hasClass('active')) {
-        if (!jquery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).closest($burger).length && e.target !== $navInner[0]) {
+        if (!jquery__WEBPACK_IMPORTED_MODULE_2___default()(e.target).closest($burger).length && e.target !== $navInner[0]) {
           $burger.removeClass('active');
           navInnerHide();
         }
@@ -15505,7 +15808,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   ; // --- trigger events ---
 
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize orientationchange', function () {
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).on('load resize orientationchange', function () {
     // resizing errors correction
     $burger.removeClass('active');
     $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
@@ -15526,7 +15829,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   }); // =====================================================
   // masonry
 
-  var $grid = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').masonry({
+  var $grid = jquery__WEBPACK_IMPORTED_MODULE_2___default()('.grid').masonry({
     itemSelector: '.grid__item',
     columnWidth: '.grid__sizer',
     percentPosition: true
@@ -15539,53 +15842,53 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   var picturesUpload = 9;
 
   function masonryLaunch(picture) {
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').append(picture).masonry('appended', picture);
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('.grid').append(picture).masonry('appended', picture);
     $grid.imagesLoaded().progress(function () {
       $grid.masonry('layout');
     });
   } // --- ajax request when a page is loaded ---
 
 
-  var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
+  var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_2___default.a.get($requestUrl, function (data) {
     for (var i = 0; i < picturesUpload; i++) {
       picturesAmount++;
 
-      var _link = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<a class=\"works__link icon-search\" href=\"javascript:void(0)\"></a>");
+      var _link = jquery__WEBPACK_IMPORTED_MODULE_2___default()("<a class=\"works__link icon-search\" href=\"picture.html\" target=\"_blank\"></a>");
 
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(_link).append("<img src=".concat(data[i].url, " alt=\"\" />"));
-      var gridItem = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<div class=\"grid__item works__item\" data-type=".concat(data[i].type, "></div>")).append(_link);
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()(_link).append("<img src=".concat(data[i].url, " alt=\"\" />"));
+      var gridItem = jquery__WEBPACK_IMPORTED_MODULE_2___default()("<div class=\"grid__item works__item\" data-type=".concat(data[i].type, "></div>")).append(_link);
       elemArr.push(gridItem);
       masonryLaunch(gridItem);
     }
   }); // opening pictures in a new tab
 
   xhrLoad.then(function () {
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('.works__link').off('click', openImg).on('click', openImg);
   })["catch"](function () {
     alert('Error! Check the correctness of the specified data');
     console.log('Error! Check the correctness of the specified data');
   }); // --- ajax request when a button is clicked ---
 
   $worksBtn.on('click', function () {
-    var httpRec = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
+    var httpRec = jquery__WEBPACK_IMPORTED_MODULE_2___default.a.get($requestUrl, function (data) {
       for (var i = 0; i < 3; i++) {
         if (picturesAmount < data.length) {
           picturesAmount++;
 
-          var _link2 = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<a class=\"works__link icon-search\" href=\"javascript:void(0)\"></a>");
+          var _link2 = jquery__WEBPACK_IMPORTED_MODULE_2___default()("<a class=\"works__link icon-search\" href=\"picture.html\" target=\"_blank\"></a>");
 
-          jquery__WEBPACK_IMPORTED_MODULE_1___default()(_link2).append("<img src=".concat(data[picturesAmount - 1].url, " alt=\"\" />"));
-          var gridItem = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<div class=\"grid__item works__item\" data-type=".concat(data[picturesAmount - 1].type, "></div>")).append(_link2);
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()(_link2).append("<img src=".concat(data[picturesAmount - 1].url, " alt=\"\" />"));
+          var gridItem = jquery__WEBPACK_IMPORTED_MODULE_2___default()("<div class=\"grid__item works__item\" data-type=".concat(data[picturesAmount - 1].type, "></div>")).append(_link2);
           elemArr.push(gridItem);
           masonryLaunch(gridItem);
         } else {
-          jquery__WEBPACK_IMPORTED_MODULE_1___default()($worksBtn).hide(animationSpeed);
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()($worksBtn).hide(animationSpeed);
         }
       }
     }); // opening pictures in a new tab
 
     httpRec.then(function () {
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()('.works__link').off('click', openImg).on('click', openImg);
     })["catch"](function () {
       alert('Error! Check the correctness of the specified data');
       console.log('Error! Check the correctness of the specified data');
@@ -15594,27 +15897,27 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   // --- ФИЛЬТР КАРТИНОК ---
 
   var removed = [];
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('[data-sort]').on('click', function () {
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()('[data-sort]').removeClass('active');
-    jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).addClass('active');
-    var sort = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).data('sort');
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('[data-sort]').on('click', function () {
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()('[data-sort]').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).addClass('active');
+    var sort = jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).data('sort');
 
     if (sort === 'all') {
       // show hidden pictures and clear the array
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
-        jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()(removed).each(function (i, val) {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(val).show();
         $grid.masonry('layout');
       });
       removed.splice(0);
     } else {
       // show hidden pictures and clear the array
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(removed).each(function (i, val) {
-        jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).show();
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()(removed).each(function (i, val) {
+        jquery__WEBPACK_IMPORTED_MODULE_2___default()(val).show();
       });
       removed.splice(0);
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()(elemArr).each(function (i, val) {
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()(elemArr).each(function (i, val) {
         if (val.data('type') !== sort) {
-          var hidden = jquery__WEBPACK_IMPORTED_MODULE_1___default()(val).hide();
+          var hidden = jquery__WEBPACK_IMPORTED_MODULE_2___default()(val).hide();
           removed.push(hidden);
           $grid.masonry('layout');
         }
@@ -15623,25 +15926,22 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   }); // --- opening pictures in a new tab ---
 
   function openImg(event) {
-    event.preventDefault;
-    var attr = jquery__WEBPACK_IMPORTED_MODULE_1___default()(event.target).children().attr('src');
-    console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(event.target).children().attr('src'));
-    sessionStorage.setItem('link', attr);
-    window.open('picture.html', '_blank');
+    var attr = jquery__WEBPACK_IMPORTED_MODULE_2___default()(event.target).find('img').attr('src');
+    console.log(jquery__WEBPACK_IMPORTED_MODULE_2___default()(event.target).find('img').attr('src'));
+    sessionStorage.setItem('link', attr); // window.open('picture.html', '_blank');
   }
 
   ; // --- picture.html ---
 
   var link = sessionStorage.getItem('link');
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // background header when scrolling
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#picture').attr('src', link);
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // background header when scrolling
 
-  var $headerBottom = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.header-bottom');
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('scroll', function () {
-    if (jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).scrollTop() > $headerBottom.innerHeight()) {
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()($headerBottom).addClass('background');
+  jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('scroll', function () {
+    if (jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).scrollTop() > $headerBottom.innerHeight()) {
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()($headerBottom).addClass('background');
     } else {
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()($headerBottom).removeClass('background');
+      jquery__WEBPACK_IMPORTED_MODULE_2___default()($headerBottom).removeClass('background');
     }
   });
 });
