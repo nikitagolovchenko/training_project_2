@@ -15492,7 +15492,6 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('click', function (e) {
       if ($burger.hasClass('active')) {
         if (!jquery__WEBPACK_IMPORTED_MODULE_1___default()(e.target).closest($burger).length && e.target !== $navInner[0]) {
-          console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this));
           $burger.removeClass('active');
           navInnerHide();
         }
@@ -15571,7 +15570,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
             $grid.masonry('layout');
           });
         } else {
-          return;
+          jquery__WEBPACK_IMPORTED_MODULE_1___default()($worksBtn).hide(300);
         }
       }
     }); // открытие картинки в новой вкладке
@@ -15623,7 +15622,16 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   var link = sessionStorage.getItem('link');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#picture').attr('src', link);
-  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")"));
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()('#pictureWrap').css('backgroundImage', "url(".concat(link, ")")); // background header when scrolling
+
+  var $headerBottom = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.header-bottom');
+  jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).on('scroll', function () {
+    if (jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).scrollTop() > $headerBottom.innerHeight()) {
+      jquery__WEBPACK_IMPORTED_MODULE_1___default()($headerBottom).addClass('background');
+    } else {
+      jquery__WEBPACK_IMPORTED_MODULE_1___default()($headerBottom).removeClass('background');
+    }
+  });
 });
 
 /***/ }),

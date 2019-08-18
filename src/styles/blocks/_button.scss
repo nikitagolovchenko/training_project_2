@@ -5,7 +5,7 @@
     border: 0;
     border-radius: 2px;
     text-transform: uppercase;
-    @extend %transition;
+    transition: cursor 0.3s linear, background-color 0.3s linear, color 0.3s linear;
     
     &:hover {
         cursor: pointer;

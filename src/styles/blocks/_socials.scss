@@ -1,4 +1,6 @@
 .socials {
+    position: relative;
+    z-index: 5;
     display: flex;
     padding: rem(15px) rem(20px);
     border-left: 1px solid $gray-cfcfcf;
@@ -19,7 +21,7 @@
 
     &__link {
         color: $gray;
-        @extend %transition;
+        transition: color 0.3s linear;
 
         &:hover {
             color: $orange;

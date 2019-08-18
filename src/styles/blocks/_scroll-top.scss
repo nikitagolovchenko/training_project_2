@@ -26,6 +26,6 @@
     &__item {
         font-size: 2rem;
         color: $white;
-        @extend %transition;
+        transition: color 0.3s linear;
     }
 }

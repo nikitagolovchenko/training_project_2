@@ -40,7 +40,7 @@
         border: 0;
         outline: none;
         cursor: pointer;
-        @extend %transition;
+        transition: color 0.3s linear;
 
         &:hover,
         &:focus {
