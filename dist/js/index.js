@@ -15462,10 +15462,12 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#close-search');
   var $nav = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav');
   var $navInner = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#nav-inner');
-  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger'); // const 
-  // component instances
+  var $burger = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#burger');
+  var $scrollTop = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#scrollTop');
+  var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
+  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#works-btn'); // component instances
 
-  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]('#scrollTop', animationSpeed);
+  var scrollElement = new components_scrollTop__WEBPACK_IMPORTED_MODULE_5__["default"]($scrollTop, animationSpeed);
   var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_6__["default"]($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
   console.log(search); // _show nav
 
@@ -15506,6 +15508,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_1___default()(window).on('load resize orientationchange', function () {
     // resizing errors correction
     $burger.removeClass('active');
+    $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
 
     if (this.innerWidth > 992) {
       $nav.show();
@@ -15520,11 +15523,8 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
     } else {
       search.eventCancel();
     }
-  });
-  $burger.off('click', toggleNavBurger).on('click', toggleNavBurger); // =====================================================
-
-  var $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
-  var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#works-btn'); // masonry
+  }); // =====================================================
+  // masonry
 
   var $grid = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').masonry({
     itemSelector: '.grid__item',
@@ -15534,10 +15534,20 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
   var picturesAmount = 0; // array of pictures
 
-  var elemArr = []; // --- ajax request when a page is loaded ---
+  var elemArr = []; // how many pictures to upload
+
+  var picturesUpload = 9;
+
+  function masonryLaunch(picture) {
+    jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').append(picture).masonry('appended', picture);
+    $grid.imagesLoaded().progress(function () {
+      $grid.masonry('layout');
+    });
+  } // --- ajax request when a page is loaded ---
+
 
   var xhrLoad = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
-    for (var i = 0; i < 9; i++) {
+    for (var i = 0; i < picturesUpload; i++) {
       picturesAmount++;
 
       var _link = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<a class=\"works__link icon-search\" href=\"javascript:void(0)\"></a>");
@@ -15545,20 +15555,20 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(_link).append("<img src=".concat(data[i].url, " alt=\"\" />"));
       var gridItem = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<div class=\"grid__item works__item\" data-type=".concat(data[i].type, "></div>")).append(_link);
       elemArr.push(gridItem);
-      jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').append(gridItem).masonry('appended', gridItem);
-      $grid.imagesLoaded().progress(function () {
-        $grid.masonry('layout');
-      });
+      masonryLaunch(gridItem);
     }
   }); // opening pictures in a new tab
 
   xhrLoad.then(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
+  })["catch"](function () {
+    alert('Error! Check the correctness of the specified data');
+    console.log('Error! Check the correctness of the specified data');
   }); // --- ajax request when a button is clicked ---
 
   $worksBtn.on('click', function () {
     var httpRec = jquery__WEBPACK_IMPORTED_MODULE_1___default.a.get($requestUrl, function (data) {
-      for (var k = 0; k < 3; k++) {
+      for (var i = 0; i < 3; i++) {
         if (picturesAmount < data.length) {
           picturesAmount++;
 
@@ -15567,10 +15577,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
           jquery__WEBPACK_IMPORTED_MODULE_1___default()(_link2).append("<img src=".concat(data[picturesAmount - 1].url, " alt=\"\" />"));
           var gridItem = jquery__WEBPACK_IMPORTED_MODULE_1___default()("<div class=\"grid__item works__item\" data-type=".concat(data[picturesAmount - 1].type, "></div>")).append(_link2);
           elemArr.push(gridItem);
-          jquery__WEBPACK_IMPORTED_MODULE_1___default()('.grid').append(gridItem).masonry('appended', gridItem);
-          $grid.imagesLoaded().progress(function () {
-            $grid.masonry('layout');
-          });
+          masonryLaunch(gridItem);
         } else {
           jquery__WEBPACK_IMPORTED_MODULE_1___default()($worksBtn).hide(animationSpeed);
         }
@@ -15579,6 +15586,9 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()(document).ready(function () {
 
     httpRec.then(function () {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()('.works__link').off('click', openImg).on('click', openImg);
+    })["catch"](function () {
+      alert('Error! Check the correctness of the specified data');
+      console.log('Error! Check the correctness of the specified data');
     });
   }); // =========================================
   // --- ФИЛЬТР КАРТИНОК ---

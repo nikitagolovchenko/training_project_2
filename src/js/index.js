@@ -23,11 +23,16 @@ $(document).ready(function () {
     const $nav = $('#nav');
     const $navInner = $('#nav-inner');
     const $burger = $('#burger');
+    
+    const $scrollTop = $('#scrollTop');
 
-    // const 
+    const $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
+    const $worksBtn = $('#works-btn');
+
+
     
     // component instances
-    const scrollElement = new ScrollTop('#scrollTop', animationSpeed);
+    const scrollElement = new ScrollTop($scrollTop, animationSpeed);
     const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
     console.log(search);
     
@@ -44,7 +49,7 @@ $(document).ready(function () {
     function navInnerHide() {
         $navInner.animate({
             width: '0'
-        }, animationSpeed, function () {
+        }, animationSpeed, () => {
             $nav.hide();
         });
     };
@@ -71,6 +76,9 @@ $(document).ready(function () {
         // resizing errors correction
         $burger.removeClass('active');
         
+        $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
+
+
         if (this.innerWidth > 992) {
             $nav.show();
             $navInner.css('width', '100%');
@@ -90,15 +98,10 @@ $(document).ready(function () {
 
     });
 
-    $burger.off('click', toggleNavBurger).on('click', toggleNavBurger);
-
 
 
     // =====================================================
 
-
-    const $requestUrl = 'https://my-json-server.typicode.com/ha100790tag/baseBuildJS/images';
-    const $worksBtn = $('#works-btn');
 
     // masonry
     let $grid = $('.grid').masonry({
@@ -113,55 +116,63 @@ $(document).ready(function () {
     let picturesAmount = 0;
     // array of pictures
     let elemArr = [];
-    
+    // how many pictures to upload
+    let picturesUpload = 9;
+
+
+    function masonryLaunch(picture) {
+        $('.grid').append(picture).masonry('appended', picture);
+
+        $grid.imagesLoaded().progress(function () {
+            $grid.masonry('layout');
+        });
+    }
+
     // --- ajax request when a page is loaded ---
     let xhrLoad = $.get($requestUrl, function (data) {
 
-        for(let i = 0; i < 9; i++) {
+        for(let i = 0; i < picturesUpload; i++) {
             picturesAmount++;
 
-            let link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+            const link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
             $(link).append(`<img src=${data[i].url} alt="" />`);
 
-            let gridItem = $(`<div class="grid__item works__item" data-type=${data[i].type}></div>`).append(link);
+            const gridItem = $(`<div class="grid__item works__item" data-type=${data[i].type}></div>`).append(link);
 
             elemArr.push(gridItem);
-            
-            $('.grid').append(gridItem).masonry('appended', gridItem);
-
-            $grid.imagesLoaded().progress(function () {
-                $grid.masonry('layout');
-            });
+            masonryLaunch(gridItem);            
         }
     });
 
     // opening pictures in a new tab
-    xhrLoad.then(function() {
-        $('.works__link').off('click', openImg).on('click', openImg);
+    xhrLoad.then(() => {
+        $('.works__link')
+        .off('click', openImg)
+        .on('click', openImg);
+    })
+    .catch(() => {
+        alert('Error! Check the correctness of the specified data')
+        console.log('Error! Check the correctness of the specified data');
     });
 
 
     // --- ajax request when a button is clicked ---
     $worksBtn.on('click', function () {
+
         let httpRec = $.get($requestUrl, function (data) {
 
-            for(let k = 0; k < 3; k++) {
+            for(let i = 0; i < 3; i++) {
                 if(picturesAmount < data.length) {
                     picturesAmount++;
                     
-                    let link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
+                    const link = $(`<a class="works__link icon-search" href="javascript:void(0)"></a>`);
                     $(link).append(`<img src=${data[picturesAmount - 1].url} alt="" />`);
 
-                    let gridItem = $(`<div class="grid__item works__item" data-type=${data[picturesAmount - 1].type}></div>`).append(link);
+                    const gridItem = $(`<div class="grid__item works__item" data-type=${data[picturesAmount - 1].type}></div>`).append(link);
 
                     elemArr.push(gridItem);
+                    masonryLaunch(gridItem);
 
-                    $('.grid').append(gridItem).masonry('appended', gridItem);
-
-                    $grid.imagesLoaded().progress(function () {
-                        $grid.masonry('layout');
-                    });
-                    
                 } else {
                     $($worksBtn).hide(animationSpeed);
                 }
@@ -169,9 +180,15 @@ $(document).ready(function () {
         });
 
         // opening pictures in a new tab
-        httpRec.then(function() {
-            $('.works__link').off('click', openImg).on('click', openImg);
+        httpRec.then(() => {
+            $('.works__link')
+            .off('click', openImg)
+            .on('click', openImg);
         })
+        .catch(() => {
+            alert('Error! Check the correctness of the specified data')
+            console.log('Error! Check the correctness of the specified data');
+        });
     });
 
     // =========================================
