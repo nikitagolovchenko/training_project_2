@@ -17,6 +17,7 @@ $(document).ready(function () {
     // --- variables ---
     let animationSpeed = 300;
     
+    const $body = $('body');
     const $search = $('#search');
     const $searchForm = $('#search-form');
     const $searchSubmit = $('#search-submit');
@@ -94,6 +95,7 @@ $(document).ready(function () {
     // _toggle Nav Burger
     function toggleNavBurger() {
         $(this).toggleClass('active');
+        $($body).toggleClass('no-scroll');
         $(this).hasClass('active') ? navInnerShow() : navInnerHide();
 
         $(document).on('click', function (e) {
@@ -101,6 +103,7 @@ $(document).ready(function () {
 
                 if ((!$(e.target).closest($burger).length) && (e.target !== $navInner[0])) {
                     $burger.removeClass('active');
+                    $($body).removeClass('no-scroll');
                     navInnerHide();
                 }
             }

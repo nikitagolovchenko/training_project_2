@@ -15806,6 +15806,7 @@ imagesloaded__WEBPACK_IMPORTED_MODULE_5___default.a.makeJQueryPlugin(jquery__WEB
 jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
   // --- variables ---
   var animationSpeed = 300;
+  var $body = jquery__WEBPACK_IMPORTED_MODULE_2___default()('body');
   var $search = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search');
   var $searchForm = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-form');
   var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-submit');
@@ -15869,11 +15870,13 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
 
   function toggleNavBurger() {
     jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).toggleClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_2___default()($body).toggleClass('no-scroll');
     jquery__WEBPACK_IMPORTED_MODULE_2___default()(this).hasClass('active') ? navInnerShow() : navInnerHide();
     jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).on('click', function (e) {
       if ($burger.hasClass('active')) {
         if (!jquery__WEBPACK_IMPORTED_MODULE_2___default()(e.target).closest($burger).length && e.target !== $navInner[0]) {
           $burger.removeClass('active');
+          jquery__WEBPACK_IMPORTED_MODULE_2___default()($body).removeClass('no-scroll');
           navInnerHide();
         }
       }
