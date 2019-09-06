@@ -36,4 +36,8 @@
     &--without-border {
         border: 0;
     }
+
+    &--bg {
+        background-color: $socials-bg;
+    }
 }
