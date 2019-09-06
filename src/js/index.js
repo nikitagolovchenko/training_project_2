@@ -19,7 +19,6 @@ $(document).ready(function () {
     
     const $body = $('body');
     const $search = $('#search');
-    const $searchForm = $('#search-form');
     const $searchSubmit = $('#search-submit');
     const $searchField = $('#search-field');
     const $closeSearch = $('#close-search');
@@ -35,7 +34,7 @@ $(document).ready(function () {
     
     // component instances
     const scrollTopButton = new ScrollTop($scrollTop, animationSpeed);
-    const search = new ShowHideSearch($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
+    const search = new ShowHideSearch($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
     const headerScrollBg = new addBgWhenScroll($headerBottom);
 
 

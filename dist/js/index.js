@@ -15634,11 +15634,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var ShowHideSearch =
 /*#__PURE__*/
 function () {
-  function ShowHideSearch(search, searchForm, searchField, searchSubmit, searchClose, animationSpeed) {
+  function ShowHideSearch(search, searchField, searchSubmit, searchClose, animationSpeed) {
     _classCallCheck(this, ShowHideSearch);
 
     this.search = search;
-    this.searchForm = searchForm;
     this.searchField = searchField;
     this.searchSubmit = searchSubmit;
     this.searchClose = searchClose;
@@ -15651,7 +15650,7 @@ function () {
       var _this = this;
 
       e.preventDefault();
-      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchField).focus();
+      jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).focus();
 
       if (window.innerWidth > 768) {
         if (!jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).hasClass('active')) {
@@ -15691,7 +15690,7 @@ function () {
   }, {
     key: "hideWidth",
     get: function get() {
-      return jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.searchForm).width();
+      return jquery__WEBPACK_IMPORTED_MODULE_4___default()(this.search).width();
     }
   }]);
 
@@ -15808,7 +15807,6 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
   var animationSpeed = 300;
   var $body = jquery__WEBPACK_IMPORTED_MODULE_2___default()('body');
   var $search = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search');
-  var $searchForm = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-form');
   var $searchSubmit = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-submit');
   var $searchField = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#search-field');
   var $closeSearch = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#close-search');
@@ -15821,7 +15819,7 @@ jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {
   var $worksBtn = jquery__WEBPACK_IMPORTED_MODULE_2___default()('#works-btn'); // component instances
 
   var scrollTopButton = new components_scrollTop__WEBPACK_IMPORTED_MODULE_6__["default"]($scrollTop, animationSpeed);
-  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_7__["default"]($search, $searchForm, $searchField, $searchSubmit, $closeSearch, animationSpeed);
+  var search = new components_navSearch__WEBPACK_IMPORTED_MODULE_7__["default"]($search, $searchField, $searchSubmit, $closeSearch, animationSpeed);
   var headerScrollBg = new _components_addBgWhenScroll__WEBPACK_IMPORTED_MODULE_8__["default"]($headerBottom); // --- resize handler ---
 
   jquery__WEBPACK_IMPORTED_MODULE_2___default()(window).on('load resize orientationchange', function () {

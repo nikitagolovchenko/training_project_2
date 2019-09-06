@@ -25,93 +25,95 @@
 		
 		<header class="header">
 			
+			<!-- header-top -->
 			<div class="header-top">
 				<div class="container">
 					<div class="header-top__inner">
 						<div class="header-top__text-line">Daily Update: <span>Branding notes photo in portfolio</span></div>
 						<div class="header-top__nav">
 							
-
-							<div class="search" id="search">
-								<form action="#" class="search__form" id="search-form">
-									<button type="submit" id="search-submit" class="icon-search search__icon"></button>
-									<input class="search__field" id="search-field" type="search" name="text" placeholder="Site search" maxlength="19">
-									<button type="reset" class="icon-cancel search__icon search__close" id="close-search"></button>
-								</form>
-							</div>
-
 							<!-- search -->
+							<form action="#" class="search" id="search">
+								<button type="submit" id="search-submit" class="icon-search search__icon"></button>
+								<input class="search__field" id="search-field" type="search" name="text" placeholder="Site search" maxlength="19">
+								<button type="reset" class="icon-cancel search__icon search__close" id="close-search"></button>
+							</form>
+
+							<!-- socials -->
 							<ul class="socials socials--bg">
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="facebook"><span class="icon-facebook"></span></a>
+									<a class="socials__link icon-facebook" href="#" target="_blank" title="facebook"></a>
 								</li>
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="twitter"><span class="icon-twitter"></span></a>
+									<a class="socials__link icon-twitter" href="#" target="_blank" title="twitter"></a>
 								</li>
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="instagram"><span class="icon-instagram"></span></a>
+									<a class="socials__link icon-instagram" href="#" target="_blank" title="instagram"></a>
 								</li>
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="pinterest"><span class="icon-pinterest"></span></a>
+									<a class="socials__link icon-pinterest" href="#" target="_blank" title="pinterest"></a>
 								</li>
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="dribble"><span class="icon-dribbble"></span></a>
+									<a class="socials__link icon-dribbble" href="#" target="_blank" title="dribble"></a>
 								</li>
 								<li class="socials__item">
-									<a class="socials__link" href="#" target="_blank" title="tumblr"><span class="icon-tumblr"></span></a>
+									<a class="socials__link icon-tumblr" href="#" target="_blank" title="tumblr"></a>
 								</li>
 							</ul>
-							<!-- /.socials -->
+
 						</div>
 					</div>
 				</div>
-				<!-- /.container -->
 			</div>
-			<!-- /.header-top -->
 
+			<!-- header-bottom -->
 			<div class="header-bottom">
 				<div class="container">
 					<div class="header-bottom__inner">
-						<div class="header-bottom__logo">
-							<a href="#"><img src="../resources/images/header/logo.png" alt="logo"></a>
+						<div class="logo">
+							<a href="#"><img src="../resources/images/header/logo.png" alt="Creative Portfolio"></a>
 						</div>
+
+						<!-- nav -->
 						<nav class="nav  header-bottom__nav" id="nav">
-							<ul class="nav__inner  header-bottom__nav-inner" id="nav-inner">
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link active" href="#">Home</a>
+							<ul class="nav__inner" id="nav-inner">
+								<li class="nav__item">
+									<a class="nav__link active" href="#">Home</a>
 								</li>
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link" href="#">Portfolio</a>
+								<li class="nav__item">
+									<a class="nav__link" href="#">Portfolio</a>
 								</li>
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link" href="#">About</a>
+								<li class="nav__item">
+									<a class="nav__link" href="#">About</a>
 								</li>
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link" href="#">Services</a>
+								<li class="nav__item">
+									<a class="nav__link" href="#">Services</a>
 								</li>
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link" href="#">Blog</a>
+								<li class="nav__item">
+									<a class="nav__link" href="#">Blog</a>
 								</li>
-								<li class="nav__item  header-bottom__nav-item">
-									<a class="nav__link  header-bottom__nav-link" href="#">Contact us</a>
+								<li class="nav__item">
+									<a class="nav__link" href="#">Contact us</a>
 								</li>
 							</ul>
 						</nav>
-						<!-- /.header-bottom__nav -->
+						
+						<!-- burger -->
 						<button type="button" class="burger" id="burger">
 							<span class="burger__elements">
 							</span>
 						</button>
+
 					</div>
 				</div>
-				<!-- /.container -->
 			</div>
-			<!-- /.header-bottom -->
 		</header>
 		
 		<main class="main">
-			<div class="contacts">
-				<div class="container">
+			<div class="container">
+
+				<!-- contacts -->
+				<div class="contacts">
 					<div class="contacts__wrap">
 						<div class="contacts__photo">
 							<img src="../resources/images/contacts/photo.jpg" alt="photo">
@@ -135,90 +137,86 @@
 									<dd class="contacts__text">Studio 36 Jump road Street, New York ACT 1995</dd>
 								</div>						
 							</dl>
-							<button class="button contacts__button" type="submit">Contact me</button>
+
+							<button class="button contacts__button" type="button">Contact me</button>
 						</div>
 					</div>
 				</div>
-				<!-- /.container -->
-			</div>
-			<!-- /.contacts -->
 
-			<div class="works">
-				<div class="container">
-					<nav class="nav nav--without-bg works__filter">
-						<ul class="nav__inner  works__filter-inner">
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link active" href="javascript:void(0)" data-sort="all">All</a>
+				<!-- works -->
+				<div class="works">
+					<div class="nav nav--without-bg works__filter">
+						<ul class="nav__inner">
+							<li class="nav__item">
+								<a class="nav__link active" href="javascript:void(0)" data-sort="all">All</a>
 							</li>
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link" href="javascript:void(0)" data-sort="illustration">Illustration</a>
+							<li class="nav__item">
+								<a class="nav__link" href="javascript:void(0)" data-sort="illustration">Illustration</a>
 							</li>
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link" href="javascript:void(0)" data-sort="presentation">Presentation</a>
+							<li class="nav__item">
+								<a class="nav__link" href="javascript:void(0)" data-sort="presentation">Presentation</a>
 							</li>
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link" href="javascript:void(0)" data-sort="photography">Photography</a>
+							<li class="nav__item">
+								<a class="nav__link" href="javascript:void(0)" data-sort="photography">Photography</a>
 							</li>
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link" href="javascript:void(0)" data-sort="joke">Joke</a>
+							<li class="nav__item">
+								<a class="nav__link" href="javascript:void(0)" data-sort="joke">Joke</a>
 							</li>
-							<li class="nav__item  works__filter-item">
-								<a class="nav__link  works__filter-link" href="javascript:void(0)" data-sort="people">People</a>
+							<li class="nav__item">
+								<a class="nav__link" href="javascript:void(0)" data-sort="people">People</a>
 							</li>
 						</ul>
-					</nav>
-					<!-- /.works__filter -->
+					</div>
 
+					<!-- grid -->
 					<div class="grid works__grid">
 						<div class="grid__sizer"></div>
-			
 					</div>
 
 					
 					<button class="button works__button" id="works-btn" type="button">Load more</button>
 				</div>
-				<!-- /.container -->
-			</div>
-			<!-- /.works -->
 
-			
-			<button type="button" class="scroll-top" id="scrollTop">
-				<div class="scroll-top__inner">
-					<span class="icon-top-arrow scroll-top__item"></span>
-				</div>
-			</button>
-			<!-- /.scroll up -->
+				<!-- scroll-top -->
+				<button type="button" class="scroll-top" id="scrollTop">
+					<div class="scroll-top__item icon-top-arrow">
+					</div>
+				</button>
+
+			</div>
 		</main>
 		
+		<!-- footer -->
 		<footer class="footer">
 			<div class="container">
 				<div class="footer__inner">
+
+					<!-- socials -->
 					<ul class="socials socials--without-border">
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="facebook"><span class="icon-facebook"></span></a>
+							<a class="socials__link icon-facebook" href="#" target="_blank" title="facebook"></a>
 						</li>
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="twitter"><span class="icon-twitter"></span></a>
+							<a class="socials__link icon-twitter" href="#" target="_blank" title="twitter"></a>
 						</li>
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="instagram"><span class="icon-instagram"></span></a>
+							<a class="socials__link icon-instagram" href="#" target="_blank" title="instagram"></a>
 						</li>
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="pinterest"><span class="icon-pinterest"></span></a>
+							<a class="socials__link icon-pinterest" href="#" target="_blank" title="pinterest"></a>
 						</li>
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="dribble"><span class="icon-dribbble"></span></a>
+							<a class="socials__link icon-dribbble" href="#" target="_blank" title="dribble"></a>
 						</li>
 						<li class="socials__item">
-							<a class="socials__link" href="#" target="_blank" title="tumblr"><span class="icon-tumblr"></span></a>
+							<a class="socials__link icon-tumblr" href="#" target="_blank" title="tumblr"></a>
 						</li>
 					</ul>
-					<!-- /.socials -->
+
 					<p class="footer__text">Portfolio with Icon by <a href="#">Digitudes</a></p>
 					<p class="footer__text">&copy; Copyright 2019 &commat; <a href="#">Republic</a>. All Rights Reserved</p>
 				</div>
 			</div>
-			<!-- /.container -->
 		</footer>
 	</div>
 	

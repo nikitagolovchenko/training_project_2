@@ -24,7 +24,6 @@
 
 		&__nav {
 			display: flex;
-			justify-content: flex-end;
 			align-items: center;
 
 			@media (max-width: $screen-sm) {
@@ -79,7 +78,7 @@
 				background-color: rgba($h-bottom-nav-bg, 0.7);
 			}
 			
-			&-inner {
+			.nav__inner {
 				background-color: rgba($h-bottom-inner-bg, 0.8);
 
 				@media (max-width: $screen-lg) {
@@ -100,13 +99,13 @@
 				}
 			}
 
-			&-item {
+			.nav__item {
 				@media (max-width: $screen-lg) {
 					padding: 0;
 				}
 			}
 
-			&-link {
+			.nav__link {
 				display: block;
 
 				@media (max-width: $screen-lg) {
@@ -132,7 +131,7 @@
 		}
 
 		&.background {
-			background-color: rgba($h-bottom-nav-bg, 0.3);
+			background-color: $header-bg;
 		}
 	}
 }

@@ -34,6 +34,9 @@ $screen-xl:                 1200px;
 
 // ==================================================
 
+// --- a ---
+$link-color:               $primary-color;
+
 // --- body ---
 $body-color:                $gray-dark;
 $body-font-family:          $font-family-base;
@@ -59,7 +62,6 @@ $cont-title-color:          $gray;
 $cont-text-color:           $gray-dark;  
 
 // --- footer ---
-$footer-link-color:         $primary-color;
 $footer-link-border:        $primary-color;
 
 // --- header ---
@@ -72,6 +74,7 @@ $h-top-span-color:          $gray;
 $h-bottom-nav-bg:           $gray-dark;
 $h-bottom-inner-bg:         $primary-color;
 $h-bottom-link-bg:          $gray-e3e3e3;
+$header-bg:                 $body-bg;
 
 // --- nav ---
 $nav-link-color:            $white;       

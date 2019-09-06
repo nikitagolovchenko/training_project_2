@@ -2,16 +2,13 @@
     position: relative;
     z-index: 1;
     left: rem(241px);
+    margin-right: rem(30px);
+    margin-left: rem(10px);
+    display: flex;
+    align-items: center;
 
     @media (max-width: $screen-sm) {
         padding-bottom: rem(10px);
-    }
-
-    &__form {
-        margin-right: rem(30px);
-        margin-left: rem(10px);
-        display: flex;
-        align-items: center;
     }
 
     &__field {

@@ -1,9 +1,8 @@
 import $ from 'jquery';
 
 export default class ShowHideSearch {
-    constructor(search, searchForm, searchField, searchSubmit, searchClose, animationSpeed) {
+    constructor(search, searchField, searchSubmit, searchClose, animationSpeed) {
         this.search = search;
-        this.searchForm = searchForm;
         this.searchField = searchField;
         this.searchSubmit = searchSubmit;
         this.searchClose = searchClose;
@@ -11,12 +10,12 @@ export default class ShowHideSearch {
     }
     
     get hideWidth() {
-        return $(this.searchForm).width();
+        return $(this.search).width();
     }
 
     showSearch(e) {   
         e.preventDefault();
-        $(this.searchField).focus();        
+        $(this.search).focus();        
 
         if(window.innerWidth > 768) {
             if(!$(this.search).hasClass('active')) {

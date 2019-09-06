@@ -35,8 +35,7 @@ html, body {
 }
 
 a {
-    display: inline-block;
     vertical-align: top;
     text-decoration: none;
-    color: inherit;
+    color: $link-color;
 }

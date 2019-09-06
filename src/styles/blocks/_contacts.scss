@@ -57,6 +57,10 @@
     &__title {
         color: $cont-title-color;
         font-style: normal;
+
+        @media (max-width: $screen-sm) {
+            min-width: rem(120px);
+        }
     }
 
     &__text {
